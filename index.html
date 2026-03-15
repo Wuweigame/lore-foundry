@@ -759,6 +759,13 @@ function initItemBuilder() {
   });
 }
 
+// Item randomization seed tables
+const ITEM_MATERIALS = ['bone','obsidian','pale iron','tarnished silver','black glass','petrified wood','salt-white stone','corroded bronze','woven shadow-fiber','dried root','cold copper','cracked ivory','ore that predates the Weave'];
+const ITEM_CONDITIONS = ['pristine but wrong','worn smooth by too many hands','partially melted','cracked and repaired badly','carved over with something newer','still warm','heavier than it should be','lighter than it looks','refuses to stay still','leaves residue','smells of somewhere else'];
+const ITEM_ORIGINS = ['Andorian','Silver Flame','pre-Vorazan','Sylvanox','monastic','unknown maker','made in the Isaryn','carried out of Elarien','never made by hands','made once and never again'];
+const ITEM_LASTHELD = ['a monk who did not survive','a soldier who buried it intentionally','a child','someone who was searching for something else','an archivist','a creature that should not have had hands','no one — it was placed, not carried','multiple owners in quick succession'];
+const ITEM_PURPOSES = ['concealment','communication','measurement','binding','offering','protection that failed','marking','memory','destruction of something specific','unknown — the maker left no record'];
+
 async function generateItem() {
   const truth = document.getElementById('item-truth').value.trim();
   if (!truth) return;
@@ -767,6 +774,12 @@ async function generateItem() {
   const history = document.getElementById('item-history').value;
   const hidden = document.getElementById('item-hidden').value;
   const dmNote = document.getElementById('item-dm-note').value;
+
+  const material = pick(ITEM_MATERIALS);
+  const condition = pick(ITEM_CONDITIONS);
+  const origin = pick(ITEM_ORIGINS);
+  const lastHeld = pick(ITEM_LASTHELD);
+  const purpose = pick(ITEM_PURPOSES);
 
   switchTab('item-result');
   document.getElementById('item-loading-wrap').style.display = 'block';
@@ -784,19 +797,28 @@ What a finder would think: ${surface}
 What it has been part of: ${history}
 Hidden property or danger: ${hidden}
 
+GENERATION SEEDS — these must shape this specific instance:
+- Primary material: ${material}
+- Physical condition: ${condition}
+- Origin tradition: ${origin}
+- Last held by: ${lastHeld}
+- Original purpose: ${purpose}
+
+These seeds must be reflected in the name, appearance, and at least two properties. They are constraints, not suggestions — they make this item unlike any other of its type.
+
 Respond ONLY with valid JSON, no preamble, no markdown fences:
 {
-  "name": "The item's proper name or designation (archaic, evocative)",
-  "type": "e.g. Carved bone token / Tarnished silver vial / Worn iron key",
-  "appearance": "2-3 sentences of physical description. What the hands feel, what the eyes see.",
+  "name": "The item's proper name or designation (archaic, evocative — shaped by the seeds)",
+  "type": "Specific physical description of the object form, using the material seed",
+  "appearance": "2-3 sentences of physical description. What the hands feel, what the eyes see. Use the material and condition seeds.",
   "properties": [
     { "key": "Property name", "value": "What it does or what is notable" }
   ],
-  "lore": "2-3 sentences of in-world flavor text, as if written by someone who once held it.",
+  "lore": "2-3 sentences of in-world flavor text, as if written by someone who once held it. Reflect the last-held and purpose seeds.",
   "dm_note": "What this item means in the campaign. Its real purpose or danger. 1-2 sentences."
 }
 
-Properties: 3-5 entries. Mix mechanical (what it does), historical (where it has been), and liminal (what it might do, what it refuses to do). Archaic tone. No modern language.`;
+Properties: 3-5 entries. Mix mechanical (what it does), historical (where it has been), and liminal (what it might do, what it refuses to do). Archaic tone. No modern language. No two items should ever feel alike.`;
 
   try {
     const raw = await callAPI(system, "Generate the item.");
