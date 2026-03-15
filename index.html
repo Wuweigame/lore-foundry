@@ -120,6 +120,7 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 .item-type-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
 .item-type-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #141210; color: var(–muted); outline: 1px solid var(–border); font-family: ‘IM Fell English’, serif; transition: all .15s; -webkit-tap-highlight-color: transparent; }
 .item-type-btn.active { background: #0f1a27; color: #7ab3d4; outline-color: #2a5a7a; }
+.item-type-btn.mundane-active { background: #141a10; color: #8aab72; outline-color: #3a5a28; }
 
 /* STAT BLOCK */
 .stat-block { border: 1px solid #2a2420; border-radius: 3px; background: #0e0b09; overflow: hidden; }
@@ -743,7 +744,7 @@ Each field: 1-3 sentences. Stay within Aldoris canon. Let the discovery location
 
 
 // ── ITEM TYPES ──
-const ITEM_TYPES = ['weapon','armor','trinket','vessel','token','inscription','reagent','relic','key','fragment'];
+const ITEM_TYPES = ['weapon','armor','trinket','vessel','token','inscription','reagent','relic','key','fragment','mundane'];
 let currentItemType = 'trinket';
 
 function initItemBuilder() {
@@ -752,7 +753,9 @@ function initItemBuilder() {
   row.innerHTML = '';
   ITEM_TYPES.forEach(t => {
     const btn = document.createElement('button');
-    btn.className = 'item-type-btn' + (t === currentItemType ? ' active' : '');
+    const isMundane = t === 'mundane';
+    const isActive = t === currentItemType;
+    btn.className = 'item-type-btn' + (isActive ? (isMundane ? ' mundane-active' : ' active') : '');
     btn.textContent = t;
     btn.onclick = () => { currentItemType = t; initItemBuilder(); };
     row.appendChild(btn);
@@ -775,11 +778,21 @@ async function generateItem() {
   const hidden = document.getElementById('item-hidden').value;
   const dmNote = document.getElementById('item-dm-note').value;
 
-  const material = pick(ITEM_MATERIALS);
-  const condition = pick(ITEM_CONDITIONS);
+  const material = pick(currentItemType === 'mundane'
+    ? ['wood','iron','leather','cloth','clay','tin','copper','glass','rope','wax','straw','paper']
+    : ITEM_MATERIALS);
+  const condition = pick(currentItemType === 'mundane'
+    ? ['old but functional','repaired more than once','initialed or marked by its owner','well-used','recently broken','tied shut with cord','wrapped in cloth','smells of smoke or food or animal','has something dried on it','one part replaced with something that doesn\'t quite match']
+    : ITEM_CONDITIONS);
   const origin = pick(ITEM_ORIGINS);
-  const lastHeld = pick(ITEM_LASTHELD);
-  const purpose = pick(ITEM_PURPOSES);
+  const lastHeld = pick(currentItemType === 'mundane'
+    ? ['a farmer or laborer','a soldier on a long march','a traveler who didn\'t make it','a child','a cook or healer','a merchant','someone who owned very little','someone who owned too much and lost it']
+    : ITEM_LASTHELD);
+  const purpose = pick(currentItemType === 'mundane'
+    ? ['eating or drinking','carrying something','keeping something dry','starting a fire','measuring or marking','cutting or fastening','storing something small','keeping a record']
+    : ITEM_PURPOSES);
+
+  const isMundane = currentItemType === 'mundane';
 
   switchTab('item-result');
   document.getElementById('item-loading-wrap').style.display = 'block';
@@ -787,38 +800,55 @@ async function generateItem() {
   document.getElementById('item-empty-wrap').style.display = 'none';
   document.getElementById('tab-item').textContent = 'Item …';
 
-  const system = `${WORLD_CANON}
+  const mundaneInstructions = isMundane ? `
+MUNDANE ITEM RULES — these override everything else:
+- This is an ordinary object. It has no magical properties, no cosmic significance, no poetic destiny.
+- Its interest comes entirely from who owned it and what they were doing. Not from what it is.
+- The name should be plain: "Tin Cup", "Folded Belt", "Short Knife". No mystical titles.
+- Appearance: describe it like you are holding it. Dents, repairs, stains, wear. Be specific.
+- Properties should be practical and human: who owned it, what was in it, what it was used for last, what the finder might do with it.
+- Lore: a quiet sentence or two. Someone\'s daily life. No drama.
+- One property may hint at something slightly unusual — not magical, just odd. A name scratched inside. A compartment. A stain that won\'t come out. That\'s the limit.
+- FORBIDDEN: cosmic language, mystical properties, references to the Weave or void, words like "ancient", "sacred", "bound", "cursed", "forged in", "imbued".` : `
+GROUNDED ITEM RULES:
+- This item exists in the physical world. It has weight, wear, and history.
+- Avoid cosmic or purple language. No "forged from starlight", no "cuts the bonds between", no mystical metaphors that don\'t cash out in something real.
+- The item\'s power or strangeness should be specific and understated. Show it through what the item has done, not through poetry about what it is.
+- If it has an unusual property, describe the effect plainly: what happens, to what, under what circumstances.
+- Lore should read like something a person wrote, not a game description. Specific. A little tired. Someone who actually held this thing.
+- FORBIDDEN: "forged from [cosmic material]", "cuts not flesh but [abstract concept]", "born of [mythic event]", destiny language, prophecy language.`;
+
+  const system = \`\${WORLD_CANON}
 
 Generate a physical item found in the world of Aldoris. Output a stat-block style entry.
 
-Item type: ${currentItemType}
-What it actually is: ${truth}
-What a finder would think: ${surface}
-What it has been part of: ${history}
-Hidden property or danger: ${hidden}
+Item type: \${currentItemType}
+What it actually is: \${truth}
+What a finder would think: \${surface}
+What it has been part of: \${history}
+Hidden property or danger: \${hidden}
 
-GENERATION SEEDS — these must shape this specific instance:
-- Primary material: ${material}
-- Physical condition: ${condition}
-- Origin tradition: ${origin}
-- Last held by: ${lastHeld}
-- Original purpose: ${purpose}
-
-These seeds must be reflected in the name, appearance, and at least two properties. They are constraints, not suggestions — they make this item unlike any other of its type.
+GENERATION SEEDS — use these to shape this specific instance:
+- Primary material: \${material}
+- Physical condition: \${condition}
+- Origin tradition: \${origin}
+- Last held by: \${lastHeld}
+- Original purpose: \${purpose}
+\${mundaneInstructions}
 
 Respond ONLY with valid JSON, no preamble, no markdown fences:
 {
-  "name": "The item's proper name or designation (archaic, evocative — shaped by the seeds)",
-  "type": "Specific physical description of the object form, using the material seed",
-  "appearance": "2-3 sentences of physical description. What the hands feel, what the eyes see. Use the material and condition seeds.",
+  "name": "Plain, specific name for the object",
+  "type": "What it physically is — material and form",
+  "appearance": "2-3 sentences. What the hands feel and the eyes see. Specific details, wear, markings.",
   "properties": [
-    { "key": "Property name", "value": "What it does or what is notable" }
+    { "key": "Property name", "value": "Specific, grounded description" }
   ],
-  "lore": "2-3 sentences of in-world flavor text, as if written by someone who once held it. Reflect the last-held and purpose seeds.",
-  "dm_note": "What this item means in the campaign. Its real purpose or danger. 1-2 sentences."
+  "lore": "1-3 sentences written as if by someone who held it. Quiet. Specific. Human.",
+  "dm_note": "What this item means or might mean. 1-2 sentences."
 }
 
-Properties: 3-5 entries. Mix mechanical (what it does), historical (where it has been), and liminal (what it might do, what it refuses to do). Archaic tone. No modern language. No two items should ever feel alike.`;
+Properties: 3-5 entries. Specific and physical. No two items should feel alike.\`;
 
   try {
     const raw = await callAPI(system, "Generate the item.");
