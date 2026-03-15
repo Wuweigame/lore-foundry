@@ -100,6 +100,19 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 
 .empty-wrap { text-align: center; padding-top: 60px; }
 .empty-lbl { font-size: 11px; color: var(–dimmer); letter-spacing: .15em; text-transform: uppercase; }
+
+/* DISCOVERED */
+.discovered-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #130f1a; outline: 1px solid #2a1c3a; color: #7c5fa8; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
+.discovered-btn:active { background: #1e1428; }
+#discovered-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 100; padding: 40px 16px; }
+.disc-inner { background: #0e0c0b; border: 1px solid #2a1c3a; border-radius: 4px; padding: 20px; max-width: 480px; margin: 0 auto; }
+.disc-title { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #7c5fa8; margin-bottom: 6px; }
+.disc-desc { font-size: 12px; color: var(–dim); font-style: italic; line-height: 1.7; margin-bottom: 14px; }
+.disc-textarea { width: 100%; background: var(–bg2); border: 1px solid #2a1c3a; color: var(–text); padding: 9px 10px; border-radius: 3px; font-size: 13px; font-family: ‘IM Fell English’, Georgia, serif; outline: none; line-height: 1.6; resize: vertical; }
+.disc-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+.disc-cancel { padding: 8px 14px; background: transparent; color: var(–muted); border: 1px solid var(–border); border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; }
+.disc-go { padding: 8px 16px; background: #3d2660; color: #c4a8f0; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; }
+.disc-go:disabled { opacity: .4; cursor: not-allowed; }
 .empty-link { margin-top: 10px; background: none; border: none; color: var(–muted); cursor: pointer; font-size: 12px; text-decoration: underline; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
 .unbound-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #0f1a14; outline: 1px solid #1c3028; color: #4a7c68; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
 .unbound-btn:active { background: #162a20; }
@@ -137,6 +150,7 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
   <div style="display:flex;gap:6px;margin-bottom:12px;align-items:center;">
     <button class="rand-btn" onclick="randomizeFill()">Random</button>
     <button class="unbound-btn" onclick="unboundFill()">Unbound</button>
+    <button class="discovered-btn" onclick="openDiscovered()">Discovered</button>
     <span class="filling-indicator" id="filling-indicator">Filling…</span>
   </div>
   <div class="voice-hint" id="voice-hint"></div>
@@ -580,6 +594,69 @@ Each field: 1-3 sentences. Archaic weight. Grief underneath. No modern tone.`;
   setFillingState(false);
 }
 
+
+function openDiscovered() {
+  document.getElementById('discovered-modal').style.display = 'block';
+  setTimeout(() => document.getElementById('disc-context').focus(), 100);
+}
+
+function closeDiscovered() {
+  document.getElementById('discovered-modal').style.display = 'none';
+}
+
+async function runDiscovered() {
+  const context = document.getElementById('disc-context').value.trim();
+  if (!context) return;
+  const btn = document.getElementById('disc-go-btn');
+  btn.disabled = true; btn.textContent = 'Reading…';
+
+  const classKeys = Object.keys(CLASSES);
+  const classOptions = classKeys.map(k => `${k}: ${CLASSES[k].label} (${CLASSES[k].voice})`).join('\n');
+
+  const system = `${WORLD_CANON}
+
+You are deciding what kind of document was found and filling the truth layer fields for a lore artifact. A player or DM has described where the document was physically discovered. Use that context to determine the most fitting document class and generate appropriate content.
+
+Available document classes:
+${classOptions}
+
+Respond ONLY with valid JSON, no preamble, no markdown fences:
+{
+  "suggestedClass": "one of the class keys exactly as listed above",
+  "subject": "A short evocative subject line for what this document is about",
+  "truthActual": "The canon truth — what actually happened",
+  "authorBelief": "What the author sincerely believes",
+  "truthWithheld": "What the author knows but will not write",
+  "authorError": "The blind spot shaping everything they wrote",
+  "hiddenImplication": "What an attentive reader should infer — never stated directly"
+}
+
+Each field: 1-3 sentences. Stay within Aldoris canon. Let the discovery location shape the tone and content deeply.`;
+
+  try {
+    const raw = await callAPI(system, `Found here: ${context}`);
+    const clean = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
+    const parsed = JSON.parse(clean);
+
+    // Apply suggested class
+    if (parsed.suggestedClass && CLASSES[parsed.suggestedClass]) {
+      currentClass = parsed.suggestedClass;
+      initClassButtons();
+      document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
+    }
+
+    // Apply all fields
+    applyFilledFields(parsed);
+
+    closeDiscovered();
+    document.getElementById('disc-context').value = '';
+  } catch(e) {
+    console.error(e);
+  }
+
+  btn.disabled = false; btn.textContent = 'Find It';
+}
+
 function getKey() { return localStorage.getItem('lf_api_key') || ''; }
 
 function saveKey() {
@@ -605,5 +682,17 @@ function checkKey() {
 checkKey();
 </script>
 
+<div id="discovered-modal">
+  <div class="disc-inner">
+    <div class="disc-title">Discovered</div>
+    <div class="disc-desc">Describe where this was found — a location, a body, a room, a moment. The Foundry will suggest what kind of document it is and fill the truth layer accordingly.</div>
+    <label class="lbl">Where was it found?</label>
+    <textarea class="disc-textarea" id="disc-context" rows="4" placeholder="e.g. Wedged behind a loose stone in the second chamber of the Isaryn, beside the remains of someone who tried to leave…"></textarea>
+    <div class="disc-actions">
+      <button class="disc-cancel" onclick="closeDiscovered()">Cancel</button>
+      <button class="disc-go" id="disc-go-btn" onclick="runDiscovered()">Find It</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
