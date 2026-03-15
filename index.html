@@ -101,6 +101,9 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 .empty-wrap { text-align: center; padding-top: 60px; }
 .empty-lbl { font-size: 11px; color: var(–dimmer); letter-spacing: .15em; text-transform: uppercase; }
 .empty-link { margin-top: 10px; background: none; border: none; color: var(–muted); cursor: pointer; font-size: 12px; text-decoration: underline; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
+.unbound-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #0f1a14; outline: 1px solid #1c3028; color: #4a7c68; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
+.unbound-btn:active { background: #162a20; }
+.filling-indicator { font-size: 10px; color: var(–amber); letter-spacing: .15em; text-transform: uppercase; padding: 6px 0; display: none; animation: pulse 1.5s ease-in-out infinite; }
 </style>
 
 </head>
@@ -131,6 +134,11 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 
 <div id="builder">
   <div class="class-row" id="class-row"></div>
+  <div style="display:flex;gap:6px;margin-bottom:12px;align-items:center;">
+    <button class="rand-btn" onclick="randomizeFill()">Random</button>
+    <button class="unbound-btn" onclick="unboundFill()">Unbound</button>
+    <span class="filling-indicator" id="filling-indicator">Filling…</span>
+  </div>
   <div class="voice-hint" id="voice-hint"></div>
 
   <div class="field">
@@ -295,9 +303,7 @@ function initClassButtons() {
     btn.onclick = () => { currentClass = k; initClassButtons(); document.getElementById('voice-hint').textContent = CLASSES[k].voice; };
     row.appendChild(btn);
   });
-  const rand = document.createElement('button');
-  rand.className = 'rand-btn'; rand.textContent = 'random'; rand.onclick = randomize;
-  row.appendChild(rand);
+
 }
 
 function init() {
@@ -459,6 +465,119 @@ function renderArtifact(text, preservation, truthRelation, hiddenImplication) {
   wrap.appendChild(actions);
 
   wrap.style.display = 'block';
+}
+
+
+async function callAPI(system, userMsg) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-api-key": getKey(), "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+    body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 800, system, messages: [{ role: "user", content: userMsg }] })
+  });
+  const data = await res.json();
+  return data.content?.find(b => b.type === "text")?.text || "";
+}
+
+function setFillingState(on) {
+  document.getElementById('filling-indicator').style.display = on ? 'inline' : 'none';
+}
+
+function applyFilledFields(parsed) {
+  if (parsed.subject) {
+    // Add as first option and select it
+    const sel = document.getElementById('subject-select');
+    const opt = document.createElement('option');
+    opt.value = parsed.subject; opt.textContent = parsed.subject;
+    sel.insertBefore(opt, sel.firstChild);
+    sel.value = parsed.subject;
+  }
+  if (parsed.truthActual) document.getElementById('truthActual').value = parsed.truthActual;
+  if (parsed.authorBelief) document.getElementById('authorBelief').value = parsed.authorBelief;
+  if (parsed.truthWithheld) document.getElementById('truthWithheld').value = parsed.truthWithheld;
+  if (parsed.authorError) document.getElementById('authorError').value = parsed.authorError;
+  if (parsed.hiddenImplication) document.getElementById('hiddenImplication').value = parsed.hiddenImplication;
+}
+
+async function randomizeFill() {
+  // First randomize the dropdowns
+  currentClass = pick(Object.keys(CLASSES));
+  initClassButtons();
+  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
+  document.getElementById('subject-select').value = pick(SUBJECTS);
+  document.getElementById('truthRelation').value = pick(TRUTH_RELATIONS);
+  document.getElementById('preservation').value = pick(PRESERVATION);
+  document.getElementById('distortion1').value = pick(DISTORTIONS);
+  document.getElementById('distortion2').value = pick(DISTORTIONS);
+  const len = pick([180, 240, 300, 380]);
+  document.getElementById('length').value = len;
+  document.getElementById('length-display').textContent = len + ' words';
+
+  setFillingState(true);
+  const subject = document.getElementById('subject-select').value;
+  const system = `${WORLD_CANON}
+
+You are filling in the truth layer fields for a lore artifact builder. Given the subject and document class below, generate fitting content for each field. Respond ONLY with valid JSON, no preamble, no markdown fences.
+
+Document class: ${CLASSES[currentClass].label}
+Subject: ${subject}
+
+Return exactly this JSON shape:
+{
+  "truthActual": "...",
+  "authorBelief": "...",
+  "truthWithheld": "...",
+  "authorError": "...",
+  "hiddenImplication": "..."
+}
+
+Keep each field to 1-3 sentences. Stay within Aldoris canon. Make the hidden implication something the reader must infer — never obvious.`;
+
+  try {
+    const raw = await callAPI(system, "Fill the fields.");
+    const clean = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
+    const parsed = JSON.parse(clean);
+    applyFilledFields(parsed);
+  } catch(e) { console.error(e); }
+  setFillingState(false);
+}
+
+async function unboundFill() {
+  // Randomize dropdowns
+  currentClass = pick(Object.keys(CLASSES));
+  initClassButtons();
+  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
+  document.getElementById('truthRelation').value = pick(TRUTH_RELATIONS);
+  document.getElementById('preservation').value = pick(PRESERVATION);
+  document.getElementById('distortion1').value = pick(DISTORTIONS);
+  document.getElementById('distortion2').value = pick(DISTORTIONS);
+  const len = pick([180, 240, 300, 380]);
+  document.getElementById('length').value = len;
+  document.getElementById('length-display').textContent = len + ' words';
+
+  setFillingState(true);
+  const system = `You are filling in fields for a historical lore artifact generator. Invent a completely original fictional world, civilization, or mythic event — not Tolkien, not D&D, not any existing IP. It should feel ancient, specific, and strange.
+
+Document class: ${CLASSES[currentClass].label}
+
+Respond ONLY with valid JSON, no preamble, no markdown fences:
+{
+  "subject": "A short evocative subject line for the artifact",
+  "truthActual": "What actually happened — the hidden canon truth",
+  "authorBelief": "What the author of this document sincerely believes",
+  "truthWithheld": "What the author knows but refuses to write",
+  "authorError": "The blind spot that shapes everything they write",
+  "hiddenImplication": "What an attentive reader should infer — never stated directly"
+}
+
+Each field: 1-3 sentences. Archaic weight. Grief underneath. No modern tone.`;
+
+  try {
+    const raw = await callAPI(system, "Generate unbound artifact fields.");
+    const clean = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
+    const parsed = JSON.parse(clean);
+    applyFilledFields(parsed);
+  } catch(e) { console.error(e); }
+  setFillingState(false);
 }
 
 function getKey() { return localStorage.getItem('lf_api_key') || ''; }
