@@ -30,8 +30,17 @@
 .tab { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; padding: 10px 12px; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; color: var(–muted); font-family: ‘IM Fell English’, serif; transition: color .2s; }
 .tab.active { border-bottom-color: var(–amber); color: var(–gold); }
 
+/* KEY SETUP */
+#key-setup { padding: 40px 16px; max-width: 480px; margin: 0 auto; }
+.key-setup-title { font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(–muted); margin-bottom: 8px; }
+.key-setup-desc { font-size: 13px; color: var(–dim); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+.key-input { width: 100%; background: var(–bg2); border: 1px solid var(–border); color: var(–text); padding: 10px; border-radius: 3px; font-size: 12px; font-family: monospace; outline: none; letter-spacing: .05em; }
+.key-btn { margin-top: 12px; padding: 10px 22px; background: var(–amber-dark); color: var(–gold); border: none; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; float: right; }
+.key-error { color: var(–red); font-size: 12px; margin-top: 8px; display: none; }
+.key-note { font-size: 11px; color: var(–dimmer); margin-top: 36px; line-height: 1.6; font-style: italic; clear: both; }
+
 /* BUILDER */
-#builder { padding: 16px; display: block; }
+#builder { padding: 16px; display: none; }
 #artifact-view { padding: 24px 16px; display: none; }
 
 .class-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
@@ -108,6 +117,16 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 <div class="tabs">
   <button class="tab active" id="tab-builder" onclick="switchTab('builder')">Build</button>
   <button class="tab" id="tab-artifact" onclick="switchTab('artifact')">Artifact</button>
+</div>
+
+<div id="key-setup">
+  <div class="key-setup-title">API Key Required</div>
+  <div class="key-setup-desc">This tool calls the Anthropic API to generate artifacts. Paste your API key below — it will be saved in your browser and never sent anywhere except directly to Anthropic.</div>
+  <label class="lbl">Your Anthropic API Key</label>
+  <input class="key-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..." />
+  <div class="key-error" id="key-error">Key doesn't look right — should start with sk-ant-</div>
+  <button class="key-btn" onclick="saveKey()">Enter the Foundry</button>
+  <div class="key-note">Get a key at console.anthropic.com. Your key is stored only in this browser's local storage and is never embedded in any file.</div>
 </div>
 
 <div id="builder">
@@ -352,7 +371,7 @@ async function generate() {
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", "x-api-key": getKey(), "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
@@ -442,7 +461,29 @@ function renderArtifact(text, preservation, truthRelation, hiddenImplication) {
   wrap.style.display = 'block';
 }
 
-init();
+function getKey() { return localStorage.getItem('lf_api_key') || ''; }
+
+function saveKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (!val.startsWith('sk-ant-')) {
+    document.getElementById('key-error').style.display = 'block';
+    return;
+  }
+  localStorage.setItem('lf_api_key', val);
+  document.getElementById('key-setup').style.display = 'none';
+  document.getElementById('builder').style.display = 'block';
+  init();
+}
+
+function checkKey() {
+  if (getKey()) {
+    document.getElementById('key-setup').style.display = 'none';
+    document.getElementById('builder').style.display = 'block';
+    init();
+  }
+}
+
+checkKey();
 </script>
 
 </body>
