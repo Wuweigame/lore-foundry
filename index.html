@@ -113,6 +113,30 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 .disc-cancel { padding: 8px 14px; background: transparent; color: var(–muted); border: 1px solid var(–border); border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; }
 .disc-go { padding: 8px 16px; background: #3d2660; color: #c4a8f0; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; }
 .disc-go:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ITEM TAB */
+#item-builder { padding: 16px; display: none; }
+#item-result { padding: 24px 16px; display: none; }
+.item-type-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+.item-type-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #141210; color: var(–muted); outline: 1px solid var(–border); font-family: ‘IM Fell English’, serif; transition: all .15s; -webkit-tap-highlight-color: transparent; }
+.item-type-btn.active { background: #0f1a27; color: #7ab3d4; outline-color: #2a5a7a; }
+
+/* STAT BLOCK */
+.stat-block { border: 1px solid #2a2420; border-radius: 3px; background: #0e0b09; overflow: hidden; }
+.stat-block-header { background: #1a100a; border-bottom: 2px solid #3c1a08; padding: 14px 16px; }
+.stat-name { font-size: 18px; color: #e7e5e4; font-family: ‘IM Fell English SC’, serif; letter-spacing: .03em; margin-bottom: 2px; }
+.stat-type { font-size: 11px; color: var(–amber); font-style: italic; }
+.stat-divider { height: 1px; background: #2a2420; margin: 0 16px; }
+.stat-section { padding: 12px 16px; }
+.stat-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
+.stat-key { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(–amber); min-width: 90px; padding-top: 2px; flex-shrink: 0; }
+.stat-val { font-size: 13px; color: var(–text); line-height: 1.6; }
+.stat-lore { padding: 12px 16px; border-top: 1px solid #1c1917; }
+.stat-lore-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(–muted); margin-bottom: 6px; }
+.stat-lore-text { font-size: 13px; color: var(–text); line-height: 1.8; font-style: italic; border-left: 2px solid #1c1917; padding-left: 14px; }
+.stat-dm { padding: 12px 16px; border-top: 1px solid #1c1917; background: var(–bg3); }
+.stat-dm-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(–dimmer); margin-bottom: 5px; }
+.stat-dm-text { font-size: 12px; color: var(–muted); font-style: italic; line-height: 1.7; }
 .empty-link { margin-top: 10px; background: none; border: none; color: var(–muted); cursor: pointer; font-size: 12px; text-decoration: underline; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
 .unbound-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #0f1a14; outline: 1px solid #1c3028; color: #4a7c68; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
 .unbound-btn:active { background: #162a20; }
@@ -132,7 +156,60 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 
 <div class="tabs">
   <button class="tab active" id="tab-builder" onclick="switchTab('builder')">Build</button>
+  <button class="tab" id="tab-item" onclick="switchTab('item')">Item</button>
   <button class="tab" id="tab-artifact" onclick="switchTab('artifact')">Artifact</button>
+</div>
+
+<div id="item-builder">
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center;">
+    <button class="rand-btn" onclick="itemRandomFill()">Random</button>
+    <button class="discovered-btn" onclick="openDiscoveredItem()">Discovered</button>
+    <span class="filling-indicator" id="item-filling-indicator">Filling…</span>
+  </div>
+
+  <div class="field">
+    <label class="lbl">Item Type</label>
+    <div class="item-type-row" id="item-type-row"></div>
+  </div>
+
+  <div class="field">
+    <label class="lbl">What It Actually Is</label>
+    <textarea id="item-truth" rows="3" placeholder="The DM truth — its real origin, purpose, or nature."></textarea>
+  </div>
+  <div class="grid2">
+    <div class="field">
+      <label class="lbl">What a Finder Would Think</label>
+      <textarea id="item-surface" rows="3" placeholder="What any reasonable person would conclude upon finding it."></textarea>
+    </div>
+    <div class="field">
+      <label class="lbl">What It Has Done</label>
+      <textarea id="item-history" rows="3" placeholder="One or two things this object has been part of."></textarea>
+    </div>
+  </div>
+  <div class="field">
+    <label class="lbl">Its Hidden Property or Danger</label>
+    <textarea id="item-hidden" rows="2" placeholder="Something it does that isn't obvious. May be mechanical, may be narrative."></textarea>
+  </div>
+  <div class="field">
+    <label class="lbl">DM Note</label>
+    <textarea id="item-dm-note" rows="2" placeholder="What you want to remember about this item's role in the campaign."></textarea>
+  </div>
+
+  <div id="item-error-msg" class="error-msg" style="display:none"></div>
+  <div class="gen-row">
+    <button class="gen-btn" id="item-gen-btn" onclick="generateItem()">Forge Item</button>
+  </div>
+</div>
+
+<div id="item-result">
+  <div id="item-loading-wrap" class="loading-wrap" style="display:none">
+    <div class="loading-text" style="color:#7ab3d4">Shaping from memory…</div>
+  </div>
+  <div id="item-content" style="display:none"></div>
+  <div id="item-empty-wrap" class="empty-wrap">
+    <p class="empty-lbl">No item yet.</p>
+    <button class="empty-link" onclick="switchTab('item')">Go to item builder</button>
+  </div>
 </div>
 
 <div id="key-setup">
@@ -358,9 +435,16 @@ function randomize() {
 }
 
 function switchTab(tab) {
-  document.getElementById('builder').style.display = tab === 'builder' ? 'block' : 'none';
-  document.getElementById('artifact-view').style.display = tab === 'artifact' ? 'block' : 'none';
+  ['builder','item-builder','item-result','artifact-view'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+  });
+  if (tab === 'builder') document.getElementById('builder').style.display = 'block';
+  else if (tab === 'item') document.getElementById('item-builder').style.display = 'block';
+  else if (tab === 'item-result') document.getElementById('item-result').style.display = 'block';
+  else if (tab === 'artifact') document.getElementById('artifact-view').style.display = 'block';
+
   document.getElementById('tab-builder').classList.toggle('active', tab === 'builder');
+  document.getElementById('tab-item').classList.toggle('active', tab === 'item' || tab === 'item-result');
   document.getElementById('tab-artifact').classList.toggle('active', tab === 'artifact');
 }
 
@@ -657,6 +741,255 @@ Each field: 1-3 sentences. Stay within Aldoris canon. Let the discovery location
   btn.disabled = false; btn.textContent = 'Find It';
 }
 
+
+// ── ITEM TYPES ──
+const ITEM_TYPES = ['weapon','armor','trinket','vessel','token','inscription','reagent','relic','key','fragment'];
+let currentItemType = 'trinket';
+
+function initItemBuilder() {
+  const row = document.getElementById('item-type-row');
+  if (!row) return;
+  row.innerHTML = '';
+  ITEM_TYPES.forEach(t => {
+    const btn = document.createElement('button');
+    btn.className = 'item-type-btn' + (t === currentItemType ? ' active' : '');
+    btn.textContent = t;
+    btn.onclick = () => { currentItemType = t; initItemBuilder(); };
+    row.appendChild(btn);
+  });
+}
+
+async function generateItem() {
+  const truth = document.getElementById('item-truth').value.trim();
+  if (!truth) return;
+
+  const surface = document.getElementById('item-surface').value;
+  const history = document.getElementById('item-history').value;
+  const hidden = document.getElementById('item-hidden').value;
+  const dmNote = document.getElementById('item-dm-note').value;
+
+  switchTab('item-result');
+  document.getElementById('item-loading-wrap').style.display = 'block';
+  document.getElementById('item-content').style.display = 'none';
+  document.getElementById('item-empty-wrap').style.display = 'none';
+  document.getElementById('tab-item').textContent = 'Item …';
+
+  const system = `${WORLD_CANON}
+
+Generate a physical item found in the world of Aldoris. Output a stat-block style entry.
+
+Item type: ${currentItemType}
+What it actually is: ${truth}
+What a finder would think: ${surface}
+What it has been part of: ${history}
+Hidden property or danger: ${hidden}
+
+Respond ONLY with valid JSON, no preamble, no markdown fences:
+{
+  "name": "The item's proper name or designation (archaic, evocative)",
+  "type": "e.g. Carved bone token / Tarnished silver vial / Worn iron key",
+  "appearance": "2-3 sentences of physical description. What the hands feel, what the eyes see.",
+  "properties": [
+    { "key": "Property name", "value": "What it does or what is notable" }
+  ],
+  "lore": "2-3 sentences of in-world flavor text, as if written by someone who once held it.",
+  "dm_note": "What this item means in the campaign. Its real purpose or danger. 1-2 sentences."
+}
+
+Properties: 3-5 entries. Mix mechanical (what it does), historical (where it has been), and liminal (what it might do, what it refuses to do). Archaic tone. No modern language.`;
+
+  try {
+    const raw = await callAPI(system, "Generate the item.");
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    renderItem(parsed, dmNote || parsed.dm_note);
+  } catch(e) {
+    console.error(e);
+    document.getElementById('item-loading-wrap').style.display = 'none';
+    document.getElementById('item-empty-wrap').style.display = 'block';
+    document.getElementById('item-error-msg').textContent = 'Generation failed.';
+    document.getElementById('item-error-msg').style.display = 'block';
+    switchTab('item');
+  } finally {
+    document.getElementById('tab-item').textContent = 'Item';
+  }
+}
+
+let lastItemOutput = '';
+
+function renderItem(data, dmNote) {
+  document.getElementById('item-loading-wrap').style.display = 'none';
+  lastItemOutput = JSON.stringify(data, null, 2);
+
+  const wrap = document.getElementById('item-content');
+  wrap.innerHTML = '';
+  wrap.className = 'fade-up';
+
+  const block = document.createElement('div');
+  block.className = 'stat-block';
+
+  // Header
+  const header = document.createElement('div');
+  header.className = 'stat-block-header';
+  header.innerHTML = `<div class="stat-name">${data.name || 'Unnamed'}</div><div class="stat-type">${data.type || currentItemType}</div>`;
+  block.appendChild(header);
+
+  // Appearance
+  const divA = document.createElement('div'); divA.className = 'stat-divider'; block.appendChild(divA);
+  const secA = document.createElement('div'); secA.className = 'stat-section';
+  secA.innerHTML = `<div class="stat-row"><span class="stat-key">Appearance</span><span class="stat-val">${data.appearance || ''}</span></div>`;
+  block.appendChild(secA);
+
+  // Properties
+  if (data.properties && data.properties.length) {
+    const divP = document.createElement('div'); divP.className = 'stat-divider'; block.appendChild(divP);
+    const secP = document.createElement('div'); secP.className = 'stat-section';
+    data.properties.forEach(p => {
+      const row = document.createElement('div'); row.className = 'stat-row';
+      row.innerHTML = `<span class="stat-key">${p.key}</span><span class="stat-val">${p.value}</span>`;
+      secP.appendChild(row);
+    });
+    block.appendChild(secP);
+  }
+
+  // Lore
+  if (data.lore) {
+    const lore = document.createElement('div'); lore.className = 'stat-lore';
+    lore.innerHTML = `<div class="stat-lore-label">Lore</div><div class="stat-lore-text">${data.lore}</div>`;
+    block.appendChild(lore);
+  }
+
+  // DM Note
+  if (dmNote) {
+    const dm = document.createElement('div'); dm.className = 'stat-dm';
+    dm.innerHTML = `<div class="stat-dm-label">DM Note</div><div class="stat-dm-text">${dmNote}</div>`;
+    block.appendChild(dm);
+  }
+
+  wrap.appendChild(block);
+
+  // Actions
+  const actions = document.createElement('div'); actions.className = 'art-actions';
+  const editBtn = document.createElement('button'); editBtn.className = 'act-btn muted'; editBtn.textContent = '← Edit'; editBtn.onclick = () => switchTab('item');
+  const regenBtn = document.createElement('button'); regenBtn.className = 'act-btn muted'; regenBtn.textContent = 'Reforge'; regenBtn.onclick = generateItem;
+  const copyBtn = document.createElement('button'); copyBtn.className = 'act-btn accent'; copyBtn.textContent = 'Copy';
+  copyBtn.onclick = async () => {
+    // Copy as readable text
+    const lines = [`${data.name} (${data.type})`, '', data.appearance, ''];
+    (data.properties||[]).forEach(p => lines.push(`${p.key}: ${p.value}`));
+    if (data.lore) { lines.push(''); lines.push(data.lore); }
+    if (dmNote) { lines.push(''); lines.push('[DM] ' + dmNote); }
+    try { await navigator.clipboard.writeText(lines.join('\n')); } catch {}
+    copyBtn.textContent = 'Copied'; setTimeout(() => copyBtn.textContent = 'Copy', 1600);
+  };
+  actions.appendChild(editBtn); actions.appendChild(regenBtn); actions.appendChild(copyBtn);
+  wrap.appendChild(actions);
+
+  wrap.style.display = 'block';
+}
+
+async function itemRandomFill() {
+  currentItemType = pick(ITEM_TYPES);
+  initItemBuilder();
+  document.getElementById('item-filling-indicator').style.display = 'inline';
+
+  const system = `${WORLD_CANON}
+
+Fill the item builder fields for a random item from the world of Aldoris. Type: ${currentItemType}.
+
+Respond ONLY with valid JSON, no preamble, no markdown fences:
+{
+  "truth": "What the item actually is — its real origin and nature",
+  "surface": "What a finder would reasonably conclude",
+  "history": "One or two things this object has been part of",
+  "hidden": "A hidden property or danger — mechanical or narrative",
+  "dmNote": "What a DM should remember about this item"
+}
+Each field 1-2 sentences. Archaic weight.`;
+
+  try {
+    const raw = await callAPI(system, "Fill item fields.");
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    if (parsed.truth) document.getElementById('item-truth').value = parsed.truth;
+    if (parsed.surface) document.getElementById('item-surface').value = parsed.surface;
+    if (parsed.history) document.getElementById('item-history').value = parsed.history;
+    if (parsed.hidden) document.getElementById('item-hidden').value = parsed.hidden;
+    if (parsed.dmNote) document.getElementById('item-dm-note').value = parsed.dmNote;
+  } catch(e) { console.error(e); }
+  document.getElementById('item-filling-indicator').style.display = 'none';
+}
+
+// Discovered modal type toggle
+let discType = 'document';
+function setDiscType(t) {
+  discType = t;
+  const docBtn = document.getElementById('disc-type-doc');
+  const itemBtn = document.getElementById('disc-type-item');
+  if (t === 'document') {
+    docBtn.style.background = '#3c1a08'; docBtn.style.color = '#fde68a'; docBtn.style.outline = '1px solid #92400e';
+    itemBtn.style.background = '#141210'; itemBtn.style.color = '#57534e'; itemBtn.style.outline = '1px solid #1c1917';
+  } else {
+    itemBtn.style.background = '#0f1a27'; itemBtn.style.color = '#7ab3d4'; itemBtn.style.outline = '1px solid #2a5a7a';
+    docBtn.style.background = '#141210'; docBtn.style.color = '#57534e'; docBtn.style.outline = '1px solid #1c1917';
+  }
+}
+
+function openDiscoveredItem() {
+  discType = 'item';
+  setDiscType('item');
+  openDiscovered();
+}
+
+async function runDiscoveredAuto() {
+  if (discType === 'item') await runDiscoveredItem();
+  else await runDiscovered();
+}
+
+async function runDiscoveredItem() {
+  const context = document.getElementById('disc-context').value.trim();
+  if (!context) return;
+  const btn = document.getElementById('disc-go-btn');
+  btn.disabled = true; btn.textContent = 'Reading…';
+
+  const typeOptions = ITEM_TYPES.join(', ');
+  const system = `${WORLD_CANON}
+
+An item was physically discovered in the world. Based on the discovery location, decide what type of item it is and fill in all builder fields.
+
+Available item types: ${typeOptions}
+
+Respond ONLY with valid JSON, no preamble, no markdown fences:
+{
+  "itemType": "one of the item types listed above",
+  "truth": "What the item actually is",
+  "surface": "What a finder would conclude",
+  "history": "What it has been part of",
+  "hidden": "Its hidden property or danger",
+  "dmNote": "What the DM should remember"
+}
+Let the discovery location deeply shape everything. Stay within Aldoris canon.`;
+
+  try {
+    const raw = await callAPI(system, `Found here: ${context}`);
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(clean);
+    if (parsed.itemType && ITEM_TYPES.includes(parsed.itemType)) {
+      currentItemType = parsed.itemType;
+      initItemBuilder();
+    }
+    if (parsed.truth) document.getElementById('item-truth').value = parsed.truth;
+    if (parsed.surface) document.getElementById('item-surface').value = parsed.surface;
+    if (parsed.history) document.getElementById('item-history').value = parsed.history;
+    if (parsed.hidden) document.getElementById('item-hidden').value = parsed.hidden;
+    if (parsed.dmNote) document.getElementById('item-dm-note').value = parsed.dmNote;
+    closeDiscovered();
+    document.getElementById('disc-context').value = '';
+    switchTab('item');
+  } catch(e) { console.error(e); }
+  btn.disabled = false; btn.textContent = 'Find It';
+}
+
 function getKey() { return localStorage.getItem('lf_api_key') || ''; }
 
 function saveKey() {
@@ -669,6 +1002,7 @@ function saveKey() {
   document.getElementById('key-setup').style.display = 'none';
   document.getElementById('builder').style.display = 'block';
   init();
+  initItemBuilder();
 }
 
 function checkKey() {
@@ -676,6 +1010,7 @@ function checkKey() {
     document.getElementById('key-setup').style.display = 'none';
     document.getElementById('builder').style.display = 'block';
     init();
+    initItemBuilder();
   }
 }
 
@@ -685,12 +1020,16 @@ checkKey();
 <div id="discovered-modal">
   <div class="disc-inner">
     <div class="disc-title">Discovered</div>
-    <div class="disc-desc">Describe where this was found — a location, a body, a room, a moment. The Foundry will suggest what kind of document it is and fill the truth layer accordingly.</div>
+    <div class="disc-desc">Describe where this was found. The Foundry will decide what it is and fill everything in.</div>
+    <div style="display:flex;gap:6px;margin-bottom:12px;">
+      <button id="disc-type-doc" onclick="setDiscType('document')" style="flex:1;padding:7px;border-radius:3px;border:none;cursor:pointer;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-family:'IM Fell English',serif;background:#3c1a08;color:#fde68a;outline:1px solid #92400e;">Document</button>
+      <button id="disc-type-item" onclick="setDiscType('item')" style="flex:1;padding:7px;border-radius:3px;border:none;cursor:pointer;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-family:'IM Fell English',serif;background:#141210;color:#57534e;outline:1px solid #1c1917;">Item</button>
+    </div>
     <label class="lbl">Where was it found?</label>
     <textarea class="disc-textarea" id="disc-context" rows="4" placeholder="e.g. Wedged behind a loose stone in the second chamber of the Isaryn, beside the remains of someone who tried to leave…"></textarea>
     <div class="disc-actions">
       <button class="disc-cancel" onclick="closeDiscovered()">Cancel</button>
-      <button class="disc-go" id="disc-go-btn" onclick="runDiscovered()">Find It</button>
+      <button class="disc-go" id="disc-go-btn" onclick="runDiscoveredAuto()">Find It</button>
     </div>
   </div>
 </div>
