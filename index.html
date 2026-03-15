@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lore Foundry — Return of Mavashik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0c0a09; --bg2: #0a0908; --bg3: #0e0c0b; --bg4: #0f0d0c;
+    --border: #1c1917; --border2: #3c1a08;
+    --text: #d6d0c4; --muted: #57534e; --dim: #44403c; --dimmer: #3c3836;
+    --amber: #92400e; --amber-dark: #7c2d12; --gold: #fde68a; --red: #f87171;
+  }
+  html, body { height: 100%; }
+  body { font-family: 'IM Fell English', Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); font-size: 14px; -webkit-text-size-adjust: 100%; }
+
+/* HEADER */
+.header { border-bottom: 1px solid var(–border); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+.header-sub { font-size: 9px; letter-spacing: .25em; text-transform: uppercase; color: var(–amber); margin-bottom: 3px; }
+.header-title { font-size: 18px; letter-spacing: .04em; color: #e7e5e4; font-family: ‘IM Fell English SC’, serif; }
+.header-right { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–dimmer); }
+
+/* TABS */
+.tabs { border-bottom: 1px solid var(–border); display: flex; padding: 0 16px; }
+.tab { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; padding: 10px 12px; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; color: var(–muted); font-family: ‘IM Fell English’, serif; transition: color .2s; }
+.tab.active { border-bottom-color: var(–amber); color: var(–gold); }
+
+/* BUILDER */
+#builder { padding: 16px; display: block; }
+#artifact-view { padding: 24px 16px; display: none; }
+
+.class-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+.class-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #141210; color: var(–muted); outline: 1px solid var(–border); font-family: ‘IM Fell English’, serif; transition: all .15s; -webkit-tap-highlight-color: transparent; }
+.class-btn.active { background: #3c1a08; color: var(–gold); outline-color: var(–amber); }
+.rand-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #141210; outline: 1px solid var(–border); color: var(–dimmer); font-family: ‘IM Fell English’, serif; margin-left: auto; -webkit-tap-highlight-color: transparent; }
+
+.voice-hint { font-size: 11px; color: var(–muted); font-style: italic; background: var(–bg4); border: 1px solid var(–border); border-radius: 3px; padding: 7px 10px; margin-bottom: 16px; }
+
+.field { margin-bottom: 12px; }
+.lbl { display: block; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–muted); margin-bottom: 4px; }
+textarea, select { width: 100%; background: var(–bg2); border: 1px solid var(–border); color: var(–text); padding: 8px 10px; border-radius: 3px; font-size: 13px; font-family: ‘IM Fell English’, Georgia, serif; outline: none; line-height: 1.6; -webkit-appearance: none; appearance: none; }
+textarea { resize: vertical; }
+select { cursor: pointer; background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’%3E%3Cpath d=‘M0 0l5 6 5-6z’ fill=’%2357534e’/%3E%3C/svg%3E”); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.divider { display: flex; align-items: center; gap: 8px; margin: 4px 0 14px; }
+.div-line { height: 1px; flex: 1; background: var(–border); }
+.div-label { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–dimmer); white-space: nowrap; }
+
+.range-row { margin-bottom: 16px; }
+.range-lbl { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–muted); margin-bottom: 5px; display: flex; justify-content: space-between; }
+.range-lbl span { color: #a8a29e; }
+input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
+
+.error-msg { color: var(–red); font-size: 12px; margin-top: 10px; }
+.gen-row { margin-top: 20px; display: flex; justify-content: flex-end; }
+.gen-btn { padding: 11px 24px; background: var(–amber-dark); color: var(–gold); border: none; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; transition: background .2s, opacity .2s; -webkit-tap-highlight-color: transparent; }
+.gen-btn:disabled { opacity: .35; cursor: not-allowed; }
+.gen-btn:not(:disabled):active { background: var(–amber); }
+
+/* ARTIFACT */
+.loading-wrap { text-align: center; padding-top: 60px; }
+.loading-text { font-size: 11px; letter-spacing: .25em; text-transform: uppercase; color: var(–amber); animation: pulse 2.2s ease-in-out infinite; }
+.loading-class { margin-top: 8px; font-size: 10px; color: var(–dimmer); letter-spacing: .15em; text-transform: uppercase; }
+@keyframes pulse { 0%,100%{opacity:.2} 50%{opacity:1} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.fade-up { animation: fadeUp .7s ease forwards; }
+
+.art-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+.art-tag { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(–amber); border: 1px solid var(–amber-dark); padding: 3px 7px; border-radius: 2px; }
+.art-state { font-size: 10px; color: var(–dim); }
+.art-body { border-left: 2px solid var(–border); padding-left: 18px; }
+.art-line { margin: 0 0 1px; line-height: 1.95; font-size: 14px; }
+.art-lost { margin: 0 0 1px; line-height: 1.95; font-size: 14px; color: var(–dim); font-style: italic; }
+.art-spacer { height: 14px; }
+
+.dm-note { margin-top: 24px; border: 1px solid var(–border); border-radius: 3px; padding: 12px; background: var(–bg3); }
+.dm-note-lbl { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–dimmer); margin-bottom: 5px; }
+.dm-note-text { font-size: 12px; color: var(–muted); font-style: italic; line-height: 1.7; }
+
+.art-actions { margin-top: 18px; display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.act-btn { padding: 8px 12px; background: transparent; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
+.act-btn.muted { color: var(–muted); border: 1px solid var(–border); }
+.act-btn.accent { color: var(–amber); border: 1px solid var(–amber-dark); }
+
+.empty-wrap { text-align: center; padding-top: 60px; }
+.empty-lbl { font-size: 11px; color: var(–dimmer); letter-spacing: .15em; text-transform: uppercase; }
+.empty-link { margin-top: 10px; background: none; border: none; color: var(–muted); cursor: pointer; font-size: 12px; text-decoration: underline; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
+</style>
+
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-sub">Return of Mavashik</div>
+    <div class="header-title">Lore Foundry</div>
+  </div>
+  <div class="header-right">Dark Ages of Toril</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" id="tab-builder" onclick="switchTab('builder')">Build</button>
+  <button class="tab" id="tab-artifact" onclick="switchTab('artifact')">Artifact</button>
+</div>
+
+<div id="builder">
+  <div class="class-row" id="class-row"></div>
+  <div class="voice-hint" id="voice-hint"></div>
+
+  <div class="field">
+    <label class="lbl">Subject</label>
+    <select id="subject-select"></select>
+  </div>
+
+  <div class="divider"><div class="div-line"></div><span class="div-label">Truth Layer</span><div class="div-line"></div></div>
+
+  <div class="field">
+    <label class="lbl">What Actually Happened</label>
+    <textarea id="truthActual" rows="3" placeholder="The canon truth — known only to you as DM."></textarea>
+  </div>
+  <div class="grid2">
+    <div class="field">
+      <label class="lbl">Author Believes</label>
+      <textarea id="authorBelief" rows="3" placeholder="Their sincere, partial interpretation."></textarea>
+    </div>
+    <div class="field">
+      <label class="lbl">Author Withholds</label>
+      <textarea id="truthWithheld" rows="3" placeholder="What they know but won't say."></textarea>
+    </div>
+  </div>
+  <div class="field">
+    <label class="lbl">Author's Blind Spot</label>
+    <textarea id="authorError" rows="2" placeholder="The error that shapes everything they write."></textarea>
+  </div>
+  <div class="field">
+    <label class="lbl">What the Reader Should Infer</label>
+    <textarea id="hiddenImplication" rows="2" placeholder="Never stated directly — lives in the gaps."></textarea>
+  </div>
+
+  <div class="divider"><div class="div-line"></div><span class="div-label">Distortion + State</span><div class="div-line"></div></div>
+
+  <div class="grid2">
+    <div class="field">
+      <label class="lbl">Truth Relation</label>
+      <select id="truthRelation"></select>
+    </div>
+    <div class="field">
+      <label class="lbl">Preservation</label>
+      <select id="preservation"></select>
+    </div>
+    <div class="field">
+      <label class="lbl">Distortion One</label>
+      <select id="distortion1"></select>
+    </div>
+    <div class="field">
+      <label class="lbl">Distortion Two</label>
+      <select id="distortion2"></select>
+    </div>
+  </div>
+
+  <div class="range-row">
+    <div class="range-lbl">Length <span id="length-display">260 words</span></div>
+    <input type="range" id="length" min="120" max="480" step="20" value="260">
+  </div>
+
+  <div id="error-msg" class="error-msg" style="display:none"></div>
+  <div class="gen-row">
+    <button class="gen-btn" id="gen-btn" onclick="generate()">Generate Artifact</button>
+  </div>
+</div>
+
+<div id="artifact-view">
+  <div id="loading-wrap" class="loading-wrap" style="display:none">
+    <div class="loading-text">Drawing from the roots…</div>
+    <div class="loading-class" id="loading-class"></div>
+  </div>
+  <div id="artifact-content" style="display:none"></div>
+  <div id="empty-wrap" class="empty-wrap">
+    <p class="empty-lbl">No artifact yet.</p>
+    <button class="empty-link" onclick="switchTab('builder')">Go to builder</button>
+  </div>
+</div>
+
+<script>
+const WORLD_CANON = `You are generating in-universe artifacts for a D&D campaign called "Return of Mavashik," set in a world called Aldoris during its Dark Ages.
+
+CANONICAL WORLD FACTS:
+- The Zanaryth-Vora is a cosmic law — not an agent or entity. Cannot be served or controlled.
+- Mavashik is Sylaenor — oldest living reflective mind. His hubris: believing he serves the Zanaryth-Vora rather than being subject to it.
+- The Heartwood Tree of Elarien sacrificed itself — the city died anyway. The stump remains: bone-pale, vast, dead for centuries. The roots are still doing something no instrument has named.
+- Elarien: ruined city built in the Heartwood's crater. Named "ancient peace" before its fall.
+- The Weave (Aelryth): fundamental fabric permitting matter to cohere. Thinned since the Heartwood's death.
+- The Thal'vorn: six fungi in the catacombs — the mechanism for entering the tree's accumulated memory.
+  - Kharaveth: fire, red-amber, burns without heat
+  - Silthmorn: earth, heavy, moss-layered
+  - Vaelthyn: air, translucent, drifts, dissolves within hours
+  - Isvoral: water, bioluminescent azure pulse
+  - Vor'ethal: void, polished, reflects light wrongly
+  - Thal'vorn (balance): perfectly symmetrical, grows only in pairs
+- The Isaryn: six chambers feeding into a central Darkness Room. A curriculum, not a tomb.
+- The Silver Flame (Miranor): guardians of the living world.
+- The Vorazan: the Long War — named for what the age was.
+- Ssolveth: drow entity, corrupts through despair, governs a conquered surface city.
+- Eldraxis: the void, pre-existence — untranslatable.
+- Uldar: language of Eldraxis. Present tense only. Everything already complete. No questions.
+- The Sylvanox: corrupted elves — those of origin who turned to the void.
+- The Vaellyth (Life Stones): built from Mirelith. Six exist. Cannot be destroyed.
+
+WRITING STYLE:
+- Archaic, poetic, weighted. Grief underneath.
+- Convey truth through metaphor. Never explain what can be felt.
+- Fragments acceptable. Compression over explanation.
+- No modern tone. Ever.`;
+
+const CLASSES = {
+  archival: { label: "Andorian Archival Record", voice: "High Andorian — formal, ordered, grief-controlled" },
+  testimony: { label: "Silver Flame Testimony", voice: "War-Witness — blunt, haunted, survivor's cadence" },
+  monastic: { label: "Monastic Manuscript", voice: "Late Monastic — reverent, damaged, uncertain of its source" },
+  doctrinal: { label: "Vey'kar Doctrinal Fragment", voice: "Corrupted — seductive, reframing horror as initiation" },
+  field: { label: "Field Report", voice: "Expedition Practical — terse, observational, unsettled at the edges" },
+  inscription: { label: "Ritual Inscription", voice: "Threshold — imperative, sparse, measuring" },
+  gloss: { label: "Scholar's Gloss", voice: "Analytic — precise, cautious, knows the limits of evidence" },
+  oral: { label: "Oral Legend", voice: "Mythic-Fragmentary — old firelight, ground keeps its counsel" },
+  uldar: { label: "Uldar Transmission", voice: "Eldraxian — present tense only, no questions, states already complete" },
+};
+
+const SUBJECTS = [
+  "The roots beneath the dead Heartwood stump of Elarien",
+  "The fall of Elarien — why the tree's sacrifice failed to save the city",
+  "The Darkness Room — the central chamber of the Isaryn",
+  "Vor'ethal and the word it repeats at the edge of perception",
+  "The first concealment of a Vaellyth (Life Stone)",
+  "Ssolveth and the conquered surface city",
+  "Why the Vorazan ended the Andorians instead of Mavashik",
+  "The Sorlithan — what it cost the Andorians to make them",
+  "The Zanaryth-Vora and what no living mind has understood about it",
+  "The Sylvanox — what they were before they turned",
+  "Mavashik's belief that he serves the Zanaryth-Vora",
+  "The last Andorian archivist and what they sealed in the Isaryn",
+];
+
+const TRUTH_RELATIONS = ["Witnessed truth","Institutional truth","Devotional truth","Corrupted truth","Mythic truth","False surface / true undertow"];
+const DISTORTIONS = ["translation loss","political self-censorship","devotional reinterpretation","trauma distortion","taboo omission","hostile recopying","physical damage","memory failure","mythic embellishment"];
+const PRESERVATION = ["pristine","lightly damaged","fragmentary","heavily fragmentary","translated and annotated","quoted only in later source","disputed authenticity"];
+
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+let currentClass = 'monastic';
+let generatedOutput = '';
+
+// Init selects
+function populateSelect(id, options, selected) {
+  const el = document.getElementById(id);
+  el.innerHTML = '';
+  options.forEach(o => {
+    const opt = document.createElement('option');
+    opt.value = o; opt.textContent = o;
+    if (o === selected) opt.selected = true;
+    el.appendChild(opt);
+  });
+}
+
+function initClassButtons() {
+  const row = document.getElementById('class-row');
+  row.innerHTML = '';
+  Object.keys(CLASSES).forEach(k => {
+    const btn = document.createElement('button');
+    btn.className = 'class-btn' + (k === currentClass ? ' active' : '');
+    btn.textContent = k;
+    btn.onclick = () => { currentClass = k; initClassButtons(); document.getElementById('voice-hint').textContent = CLASSES[k].voice; };
+    row.appendChild(btn);
+  });
+  const rand = document.createElement('button');
+  rand.className = 'rand-btn'; rand.textContent = 'random'; rand.onclick = randomize;
+  row.appendChild(rand);
+}
+
+function init() {
+  initClassButtons();
+  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
+  populateSelect('subject-select', SUBJECTS, SUBJECTS[0]);
+  populateSelect('truthRelation', TRUTH_RELATIONS, 'Devotional truth');
+  populateSelect('preservation', PRESERVATION, 'fragmentary');
+  populateSelect('distortion1', DISTORTIONS, 'devotional reinterpretation');
+  populateSelect('distortion2', DISTORTIONS, 'translation loss');
+
+  document.getElementById('truthActual').value = "The roots retained partial consciousness after the Heartwood sacrificed itself. They are not dormant. They are waiting.";
+  document.getElementById('authorBelief').value = "The tree is wholly dead. What the roots do is residual and fading.";
+  document.getElementById('truthWithheld').value = "The monks continue to use the site despite the roots responding to presence.";
+  document.getElementById('authorError').value = "Assumes benevolence because the tree was benevolent.";
+  document.getElementById('hiddenImplication').value = "The roots are not fading. They are learning.";
+
+  document.getElementById('length').addEventListener('input', e => {
+    document.getElementById('length-display').textContent = e.target.value + ' words';
+  });
+}
+
+function randomize() {
+  currentClass = pick(Object.keys(CLASSES));
+  initClassButtons();
+  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
+  document.getElementById('subject-select').value = pick(SUBJECTS);
+  document.getElementById('truthRelation').value = pick(TRUTH_RELATIONS);
+  document.getElementById('preservation').value = pick(PRESERVATION);
+  document.getElementById('distortion1').value = pick(DISTORTIONS);
+  document.getElementById('distortion2').value = pick(DISTORTIONS);
+  const len = pick([180, 240, 300, 380]);
+  document.getElementById('length').value = len;
+  document.getElementById('length-display').textContent = len + ' words';
+  ['truthActual','authorBelief','truthWithheld','authorError','hiddenImplication'].forEach(id => document.getElementById(id).value = '');
+  generatedOutput = '';
+  switchTab('builder');
+}
+
+function switchTab(tab) {
+  document.getElementById('builder').style.display = tab === 'builder' ? 'block' : 'none';
+  document.getElementById('artifact-view').style.display = tab === 'artifact' ? 'block' : 'none';
+  document.getElementById('tab-builder').classList.toggle('active', tab === 'builder');
+  document.getElementById('tab-artifact').classList.toggle('active', tab === 'artifact');
+}
+
+async function generate() {
+  const truthActual = document.getElementById('truthActual').value.trim();
+  if (!truthActual) return;
+
+  const subject = document.getElementById('subject-select').value;
+  const authorBelief = document.getElementById('authorBelief').value;
+  const truthWithheld = document.getElementById('truthWithheld').value;
+  const authorError = document.getElementById('authorError').value;
+  const hiddenImplication = document.getElementById('hiddenImplication').value;
+  const truthRelation = document.getElementById('truthRelation').value;
+  const distortion1 = document.getElementById('distortion1').value;
+  const distortion2 = document.getElementById('distortion2').value;
+  const preservation = document.getElementById('preservation').value;
+  const length = document.getElementById('length').value;
+
+  switchTab('artifact');
+  document.getElementById('loading-wrap').style.display = 'block';
+  document.getElementById('artifact-content').style.display = 'none';
+  document.getElementById('empty-wrap').style.display = 'none';
+  document.getElementById('loading-class').textContent = CLASSES[currentClass].label;
+  document.getElementById('tab-artifact').textContent = 'Artifact …';
+
+  const system = `${WORLD_CANON}\n\nGenerate a single in-universe artifact.\nClass: ${CLASSES[currentClass].label}\nVoice: ${CLASSES[currentClass].voice}\nSubject: ${subject}\nWhat actually happened: ${truthActual}\nWhat the author believes: ${authorBelief}\nWhat the author withholds: ${truthWithheld}\nThe author's blind spot: ${authorError}\nTruth relation: ${truthRelation}\nDistortions: ${distortion1}, ${distortion2}\nPreservation: ${preservation}\nHidden implication (never state directly): ${hiddenImplication}\nLength: ~${length} words\n\nRULES: Write ONLY the artifact. No preamble. Never state the hidden implication directly. If fragmentary, use [line lost] or [illegible]. End with — [Author name]. No modern vocabulary.`;
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system,
+        messages: [{ role: "user", content: "Generate the artifact." }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.find(b => b.type === "text")?.text || "";
+    if (!text) throw new Error("No content");
+    generatedOutput = text;
+    renderArtifact(text, preservation, truthRelation, hiddenImplication);
+  } catch(e) {
+    document.getElementById('loading-wrap').style.display = 'none';
+    document.getElementById('empty-wrap').style.display = 'block';
+    document.getElementById('error-msg').textContent = 'Generation failed. Check your connection and try again.';
+    document.getElementById('error-msg').style.display = 'block';
+    switchTab('builder');
+  } finally {
+    document.getElementById('tab-artifact').textContent = 'Artifact';
+  }
+}
+
+function renderArtifact(text, preservation, truthRelation, hiddenImplication) {
+  document.getElementById('loading-wrap').style.display = 'none';
+
+  const wrap = document.getElementById('artifact-content');
+  wrap.innerHTML = '';
+  wrap.className = 'fade-up';
+
+  // Meta
+  const meta = document.createElement('div');
+  meta.className = 'art-meta';
+  const tag = document.createElement('span');
+  tag.className = 'art-tag'; tag.textContent = CLASSES[currentClass].label;
+  const state = document.createElement('span');
+  state.className = 'art-state'; state.textContent = preservation + ' · ' + truthRelation;
+  meta.appendChild(tag); meta.appendChild(state);
+  wrap.appendChild(meta);
+
+  // Body
+  const body = document.createElement('div');
+  body.className = 'art-body';
+  text.split('\n').forEach(line => {
+    if (!line.trim()) { const sp = document.createElement('div'); sp.className = 'art-spacer'; body.appendChild(sp); return; }
+    const p = document.createElement('p');
+    const isLost = line.includes('[line lost]') || line.includes('[illegible]');
+    p.className = isLost ? 'art-lost' : 'art-line';
+    p.textContent = line;
+    body.appendChild(p);
+  });
+  wrap.appendChild(body);
+
+  // DM Note
+  if (hiddenImplication) {
+    const note = document.createElement('div');
+    note.className = 'dm-note';
+    const lbl = document.createElement('div'); lbl.className = 'dm-note-lbl'; lbl.textContent = 'DM Note';
+    const txt = document.createElement('p'); txt.className = 'dm-note-text'; txt.textContent = hiddenImplication;
+    note.appendChild(lbl); note.appendChild(txt);
+    wrap.appendChild(note);
+  }
+
+  // Actions
+  const actions = document.createElement('div');
+  actions.className = 'art-actions';
+
+  const editBtn = document.createElement('button');
+  editBtn.className = 'act-btn muted'; editBtn.textContent = '← Edit';
+  editBtn.onclick = () => switchTab('builder');
+
+  const regenBtn = document.createElement('button');
+  regenBtn.className = 'act-btn muted'; regenBtn.textContent = 'Regenerate';
+  regenBtn.onclick = () => generate();
+
+  const copyBtn = document.createElement('button');
+  copyBtn.className = 'act-btn accent'; copyBtn.textContent = 'Copy';
+  copyBtn.onclick = async () => {
+    try { await navigator.clipboard.writeText(generatedOutput); } catch {}
+    copyBtn.textContent = 'Copied';
+    setTimeout(() => copyBtn.textContent = 'Copy', 1600);
+  };
+
+  actions.appendChild(editBtn); actions.appendChild(regenBtn); actions.appendChild(copyBtn);
+  wrap.appendChild(actions);
+
+  wrap.style.display = 'block';
+}
+
+init();
+</script>
+
+</body>
+</html>
