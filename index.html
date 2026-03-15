@@ -4,144 +4,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lore Foundry — Return of Mavashik</title>
+<title>Lore Foundry</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #0c0a09; --bg2: #0a0908; --bg3: #0e0c0b; --bg4: #0f0d0c;
-    --border: #1c1917; --border2: #3c1a08;
-    --text: #d6d0c4; --muted: #57534e; --dim: #44403c; --dimmer: #3c3836;
-    --amber: #92400e; --amber-dark: #7c2d12; --gold: #fde68a; --red: #f87171;
-  }
-  html, body { height: 100%; }
-  body { font-family: 'IM Fell English', Georgia, 'Times New Roman', serif; background: var(--bg); color: var(--text); font-size: 14px; -webkit-text-size-adjust: 100%; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0c0a09;--bg2:#0a0908;--bg3:#0e0c0b;--bg4:#0f0d0c;--border:#1c1917;--text:#d6d0c4;--muted:#57534e;--dim:#44403c;--dimmer:#3c3836;--amber:#92400e;--amber-dark:#7c2d12;--gold:#fde68a;--red:#f87171}
+html,body{height:100%}
+body{font-family:'IM Fell English',Georgia,'Times New Roman',serif;background:var(--bg);color:var(--text);font-size:14px;-webkit-text-size-adjust:100%}
+.header{border-bottom:1px solid var(--border);padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.header-sub{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--amber);margin-bottom:3px}
+.header-title{font-size:18px;letter-spacing:.04em;color:#e7e5e4;font-family:'IM Fell English SC',serif}
+.header-right{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dimmer)}
+.tabs{border-bottom:1px solid var(--border);display:flex;padding:0 16px}
+.tab{font-size:10px;letter-spacing:.18em;text-transform:uppercase;padding:10px 12px;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;color:var(--muted);font-family:'IM Fell English',serif;transition:color .2s}
+.tab.active{border-bottom-color:var(--amber);color:var(--gold)}
+#key-setup{padding:40px 16px;max-width:480px;margin:0 auto}
+.key-setup-title{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.key-setup-desc{font-size:13px;color:var(--dim);line-height:1.7;margin-bottom:20px;font-style:italic}
+.key-input{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:10px;border-radius:3px;font-size:12px;font-family:monospace;outline:none;letter-spacing:.05em}
+.key-btn{margin-top:12px;padding:10px 22px;background:var(--amber-dark);color:var(--gold);border:none;border-radius:3px;cursor:pointer;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-family:'IM Fell English',serif;float:right}
+.key-error{color:var(--red);font-size:12px;margin-top:8px;display:none}
+.key-note{font-size:11px;color:var(--dimmer);margin-top:36px;line-height:1.6;font-style:italic;clear:both}
+#builder{padding:16px;display:none}
+#artifact-view{padding:24px 16px;display:none}
+#item-builder{padding:16px;display:none}
+#item-result{padding:24px 16px;display:none}
+.class-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.class-btn{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 8px;border-radius:3px;cursor:pointer;border:none;background:#141210;color:var(--muted);outline:1px solid var(--border);font-family:'IM Fell English',serif;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.class-btn.active{background:#3c1a08;color:var(--gold);outline-color:var(--amber)}
+.rand-btn{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 8px;border-radius:3px;cursor:pointer;border:none;background:#141210;outline:1px solid var(--border);color:var(--dimmer);font-family:'IM Fell English',serif;-webkit-tap-highlight-color:transparent}
+.voice-hint{font-size:11px;color:var(--muted);font-style:italic;background:var(--bg4);border:1px solid var(--border);border-radius:3px;padding:7px 10px;margin-bottom:16px}
+.field{margin-bottom:12px}
+.lbl{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+textarea,select{width:100%;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:3px;font-size:13px;font-family:'IM Fell English',Georgia,serif;outline:none;line-height:1.6;-webkit-appearance:none;appearance:none}
+textarea{resize:vertical}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%2357534e'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.divider{display:flex;align-items:center;gap:8px;margin:4px 0 14px}
+.div-line{height:1px;flex:1;background:var(--border)}
+.div-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dimmer);white-space:nowrap}
+.range-row{margin-bottom:16px}
+.range-lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between}
+.range-lbl span{color:#a8a29e}
+input[type=range]{width:100%;accent-color:var(--amber);cursor:pointer}
+.error-msg{color:var(--red);font-size:12px;margin-top:10px}
+.gen-row{margin-top:20px;display:flex;justify-content:flex-end}
+.gen-btn{padding:11px 24px;background:var(--amber-dark);color:var(--gold);border:none;border-radius:3px;cursor:pointer;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-family:'IM Fell English',serif;transition:background .2s,opacity .2s;-webkit-tap-highlight-color:transparent}
+.gen-btn:disabled{opacity:.35;cursor:not-allowed}
+.loading-wrap{text-align:center;padding-top:60px}
+.loading-text{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--amber);animation:pulse 2.2s ease-in-out infinite}
+.loading-class{margin-top:8px;font-size:10px;color:var(--dimmer);letter-spacing:.15em;text-transform:uppercase}
+@keyframes pulse{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp .7s ease forwards}
+.art-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;align-items:center}
+.art-tag{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);border:1px solid var(--amber-dark);padding:3px 7px;border-radius:2px}
+.art-state{font-size:10px;color:var(--dim)}
+.art-body{border-left:2px solid var(--border);padding-left:18px}
+.art-line{margin:0 0 1px;line-height:1.95;font-size:14px}
+.art-lost{margin:0 0 1px;line-height:1.95;font-size:14px;color:var(--dim);font-style:italic}
+.art-spacer{height:14px}
+.dm-note{margin-top:24px;border:1px solid var(--border);border-radius:3px;padding:12px;background:var(--bg3)}
+.dm-note-lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dimmer);margin-bottom:5px}
+.dm-note-text{font-size:12px;color:var(--muted);font-style:italic;line-height:1.7}
+.art-actions{margin-top:18px;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.act-btn{padding:8px 12px;background:transparent;border-radius:3px;cursor:pointer;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-family:'IM Fell English',serif;-webkit-tap-highlight-color:transparent}
+.act-btn.muted{color:var(--muted);border:1px solid var(--border)}
+.act-btn.accent{color:var(--amber);border:1px solid var(--amber-dark)}
+.empty-wrap{text-align:center;padding-top:60px}
+.empty-lbl{font-size:11px;color:var(--dimmer);letter-spacing:.15em;text-transform:uppercase}
+.discovered-btn{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 8px;border-radius:3px;cursor:pointer;border:none;background:#130f1a;outline:1px solid #2a1c3a;color:#7c5fa8;font-family:'IM Fell English',serif;-webkit-tap-highlight-color:transparent}
+#discovered-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:100;padding:40px 16px}
+.disc-inner{background:#0e0c0b;border:1px solid #2a1c3a;border-radius:4px;padding:20px;max-width:480px;margin:0 auto}
+.disc-title{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#7c5fa8;margin-bottom:6px}
+.disc-desc{font-size:12px;color:var(--dim);font-style:italic;line-height:1.7;margin-bottom:14px}
+.disc-textarea{width:100%;background:var(--bg2);border:1px solid #2a1c3a;color:var(--text);padding:9px 10px;border-radius:3px;font-size:13px;font-family:'IM Fell English',Georgia,serif;outline:none;line-height:1.6;resize:vertical}
+.disc-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.disc-cancel{padding:8px 14px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:3px;cursor:pointer;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-family:'IM Fell English',serif}
+.disc-go{padding:8px 16px;background:#3d2660;color:#c4a8f0;border:none;border-radius:3px;cursor:pointer;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-family:'IM Fell English',serif}
+.disc-go:disabled{opacity:.4;cursor:not-allowed}
+.item-type-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.item-type-btn{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 8px;border-radius:3px;cursor:pointer;border:none;background:#141210;color:var(--muted);outline:1px solid var(--border);font-family:'IM Fell English',serif;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.item-type-btn.active{background:#0f1a27;color:#7ab3d4;outline-color:#2a5a7a}
+.item-type-btn.mundane-active{background:#141a10;color:#8aab72;outline-color:#3a5a28}
+.stat-block{border:1px solid #2a2420;border-radius:3px;background:#0e0b09;overflow:hidden}
+.stat-block-header{background:#1a100a;border-bottom:2px solid #3c1a08;padding:14px 16px}
+.stat-name{font-size:18px;color:#e7e5e4;font-family:'IM Fell English SC',serif;letter-spacing:.03em;margin-bottom:2px}
+.stat-type{font-size:11px;color:var(--amber);font-style:italic}
+.stat-divider{height:1px;background:#2a2420;margin:0 16px}
+.stat-section{padding:12px 16px}
+.stat-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start}
+.stat-key{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--amber);min-width:90px;padding-top:2px;flex-shrink:0}
+.stat-val{font-size:13px;color:var(--text);line-height:1.6}
+.stat-lore{padding:12px 16px;border-top:1px solid #1c1917}
+.stat-lore-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.stat-lore-text{font-size:13px;color:var(--text);line-height:1.8;font-style:italic;border-left:2px solid #1c1917;padding-left:14px}
+.stat-dm{padding:12px 16px;border-top:1px solid #1c1917;background:var(--bg3)}
+.stat-dm-label{font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--dimmer);margin-bottom:5px}
+.stat-dm-text{font-size:12px;color:var(--muted);font-style:italic;line-height:1.7}
+.empty-link{margin-top:10px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;text-decoration:underline;font-family:'IM Fell English',serif}
+.unbound-btn{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 8px;border-radius:3px;cursor:pointer;border:none;background:#0f1a14;outline:1px solid #1c3028;color:#4a7c68;font-family:'IM Fell English',serif}
+.filling-indicator{font-size:10px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;padding:6px 0;display:none;animation:pulse 1.5s ease-in-out infinite}
 
-/* HEADER */
-.header { border-bottom: 1px solid var(–border); padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-.header-sub { font-size: 9px; letter-spacing: .25em; text-transform: uppercase; color: var(–amber); margin-bottom: 3px; }
-.header-title { font-size: 18px; letter-spacing: .04em; color: #e7e5e4; font-family: ‘IM Fell English SC’, serif; }
-.header-right { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–dimmer); }
-
-/* TABS */
-.tabs { border-bottom: 1px solid var(–border); display: flex; padding: 0 16px; }
-.tab { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; padding: 10px 12px; border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; color: var(–muted); font-family: ‘IM Fell English’, serif; transition: color .2s; }
-.tab.active { border-bottom-color: var(–amber); color: var(–gold); }
-
-/* KEY SETUP */
-#key-setup { padding: 40px 16px; max-width: 480px; margin: 0 auto; }
-.key-setup-title { font-size: 13px; letter-spacing: .2em; text-transform: uppercase; color: var(–muted); margin-bottom: 8px; }
-.key-setup-desc { font-size: 13px; color: var(–dim); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
-.key-input { width: 100%; background: var(–bg2); border: 1px solid var(–border); color: var(–text); padding: 10px; border-radius: 3px; font-size: 12px; font-family: monospace; outline: none; letter-spacing: .05em; }
-.key-btn { margin-top: 12px; padding: 10px 22px; background: var(–amber-dark); color: var(–gold); border: none; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; float: right; }
-.key-error { color: var(–red); font-size: 12px; margin-top: 8px; display: none; }
-.key-note { font-size: 11px; color: var(–dimmer); margin-top: 36px; line-height: 1.6; font-style: italic; clear: both; }
-
-/* BUILDER */
-#builder { padding: 16px; display: none; }
-#artifact-view { padding: 24px 16px; display: none; }
-
-.class-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
-.class-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #141210; color: var(–muted); outline: 1px solid var(–border); font-family: ‘IM Fell English’, serif; transition: all .15s; -webkit-tap-highlight-color: transparent; }
-.class-btn.active { background: #3c1a08; color: var(–gold); outline-color: var(–amber); }
-.rand-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #141210; outline: 1px solid var(–border); color: var(–dimmer); font-family: ‘IM Fell English’, serif; margin-left: auto; -webkit-tap-highlight-color: transparent; }
-
-.voice-hint { font-size: 11px; color: var(–muted); font-style: italic; background: var(–bg4); border: 1px solid var(–border); border-radius: 3px; padding: 7px 10px; margin-bottom: 16px; }
-
-.field { margin-bottom: 12px; }
-.lbl { display: block; font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–muted); margin-bottom: 4px; }
-textarea, select { width: 100%; background: var(–bg2); border: 1px solid var(–border); color: var(–text); padding: 8px 10px; border-radius: 3px; font-size: 13px; font-family: ‘IM Fell English’, Georgia, serif; outline: none; line-height: 1.6; -webkit-appearance: none; appearance: none; }
-textarea { resize: vertical; }
-select { cursor: pointer; background-image: url(“data:image/svg+xml,%3Csvg xmlns=‘http://www.w3.org/2000/svg’ width=‘10’ height=‘6’%3E%3Cpath d=‘M0 0l5 6 5-6z’ fill=’%2357534e’/%3E%3C/svg%3E”); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
-
-.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-.divider { display: flex; align-items: center; gap: 8px; margin: 4px 0 14px; }
-.div-line { height: 1px; flex: 1; background: var(–border); }
-.div-label { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–dimmer); white-space: nowrap; }
-
-.range-row { margin-bottom: 16px; }
-.range-lbl { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–muted); margin-bottom: 5px; display: flex; justify-content: space-between; }
-.range-lbl span { color: #a8a29e; }
-input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
-
-.error-msg { color: var(–red); font-size: 12px; margin-top: 10px; }
-.gen-row { margin-top: 20px; display: flex; justify-content: flex-end; }
-.gen-btn { padding: 11px 24px; background: var(–amber-dark); color: var(–gold); border: none; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; transition: background .2s, opacity .2s; -webkit-tap-highlight-color: transparent; }
-.gen-btn:disabled { opacity: .35; cursor: not-allowed; }
-.gen-btn:not(:disabled):active { background: var(–amber); }
-
-/* ARTIFACT */
-.loading-wrap { text-align: center; padding-top: 60px; }
-.loading-text { font-size: 11px; letter-spacing: .25em; text-transform: uppercase; color: var(–amber); animation: pulse 2.2s ease-in-out infinite; }
-.loading-class { margin-top: 8px; font-size: 10px; color: var(–dimmer); letter-spacing: .15em; text-transform: uppercase; }
-@keyframes pulse { 0%,100%{opacity:.2} 50%{opacity:1} }
-@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-.fade-up { animation: fadeUp .7s ease forwards; }
-
-.art-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
-.art-tag { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(–amber); border: 1px solid var(–amber-dark); padding: 3px 7px; border-radius: 2px; }
-.art-state { font-size: 10px; color: var(–dim); }
-.art-body { border-left: 2px solid var(–border); padding-left: 18px; }
-.art-line { margin: 0 0 1px; line-height: 1.95; font-size: 14px; }
-.art-lost { margin: 0 0 1px; line-height: 1.95; font-size: 14px; color: var(–dim); font-style: italic; }
-.art-spacer { height: 14px; }
-
-.dm-note { margin-top: 24px; border: 1px solid var(–border); border-radius: 3px; padding: 12px; background: var(–bg3); }
-.dm-note-lbl { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(–dimmer); margin-bottom: 5px; }
-.dm-note-text { font-size: 12px; color: var(–muted); font-style: italic; line-height: 1.7; }
-
-.art-actions { margin-top: 18px; display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
-.act-btn { padding: 8px 12px; background: transparent; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
-.act-btn.muted { color: var(–muted); border: 1px solid var(–border); }
-.act-btn.accent { color: var(–amber); border: 1px solid var(–amber-dark); }
-
-.empty-wrap { text-align: center; padding-top: 60px; }
-.empty-lbl { font-size: 11px; color: var(–dimmer); letter-spacing: .15em; text-transform: uppercase; }
-
-/* DISCOVERED */
-.discovered-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #130f1a; outline: 1px solid #2a1c3a; color: #7c5fa8; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
-.discovered-btn:active { background: #1e1428; }
-#discovered-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 100; padding: 40px 16px; }
-.disc-inner { background: #0e0c0b; border: 1px solid #2a1c3a; border-radius: 4px; padding: 20px; max-width: 480px; margin: 0 auto; }
-.disc-title { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: #7c5fa8; margin-bottom: 6px; }
-.disc-desc { font-size: 12px; color: var(–dim); font-style: italic; line-height: 1.7; margin-bottom: 14px; }
-.disc-textarea { width: 100%; background: var(–bg2); border: 1px solid #2a1c3a; color: var(–text); padding: 9px 10px; border-radius: 3px; font-size: 13px; font-family: ‘IM Fell English’, Georgia, serif; outline: none; line-height: 1.6; resize: vertical; }
-.disc-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
-.disc-cancel { padding: 8px 14px; background: transparent; color: var(–muted); border: 1px solid var(–border); border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; }
-.disc-go { padding: 8px 16px; background: #3d2660; color: #c4a8f0; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .15em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; }
-.disc-go:disabled { opacity: .4; cursor: not-allowed; }
-
-/* ITEM TAB */
-#item-builder { padding: 16px; display: none; }
-#item-result { padding: 24px 16px; display: none; }
-.item-type-row { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
-.item-type-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #141210; color: var(–muted); outline: 1px solid var(–border); font-family: ‘IM Fell English’, serif; transition: all .15s; -webkit-tap-highlight-color: transparent; }
-.item-type-btn.active { background: #0f1a27; color: #7ab3d4; outline-color: #2a5a7a; }
-.item-type-btn.mundane-active { background: #141a10; color: #8aab72; outline-color: #3a5a28; }
-
-/* STAT BLOCK */
-.stat-block { border: 1px solid #2a2420; border-radius: 3px; background: #0e0b09; overflow: hidden; }
-.stat-block-header { background: #1a100a; border-bottom: 2px solid #3c1a08; padding: 14px 16px; }
-.stat-name { font-size: 18px; color: #e7e5e4; font-family: ‘IM Fell English SC’, serif; letter-spacing: .03em; margin-bottom: 2px; }
-.stat-type { font-size: 11px; color: var(–amber); font-style: italic; }
-.stat-divider { height: 1px; background: #2a2420; margin: 0 16px; }
-.stat-section { padding: 12px 16px; }
-.stat-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
-.stat-key { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(–amber); min-width: 90px; padding-top: 2px; flex-shrink: 0; }
-.stat-val { font-size: 13px; color: var(–text); line-height: 1.6; }
-.stat-lore { padding: 12px 16px; border-top: 1px solid #1c1917; }
-.stat-lore-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(–muted); margin-bottom: 6px; }
-.stat-lore-text { font-size: 13px; color: var(–text); line-height: 1.8; font-style: italic; border-left: 2px solid #1c1917; padding-left: 14px; }
-.stat-dm { padding: 12px 16px; border-top: 1px solid #1c1917; background: var(–bg3); }
-.stat-dm-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(–dimmer); margin-bottom: 5px; }
-.stat-dm-text { font-size: 12px; color: var(–muted); font-style: italic; line-height: 1.7; }
-.empty-link { margin-top: 10px; background: none; border: none; color: var(–muted); cursor: pointer; font-size: 12px; text-decoration: underline; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
-.unbound-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #0f1a14; outline: 1px solid #1c3028; color: #4a7c68; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
-.unbound-btn:active { background: #162a20; }
-.filling-indicator { font-size: 10px; color: var(–amber); letter-spacing: .15em; text-transform: uppercase; padding: 6px 0; display: none; animation: pulse 1.5s ease-in-out infinite; }
+/* MAP */
+#map-tab{padding:16px;display:none}
+.map-type-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;align-items:center}
+.map-type-btn{font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:3px;cursor:pointer;border:none;background:#141210;color:var(–muted);outline:1px solid var(–border);font-family:‘IM Fell English’,serif;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.map-type-btn.active{background:#1a1008;color:var(–gold);outline-color:var(–amber)}
+.map-opts-row{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;align-items:center}
+.map-slider-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:150px}
+.map-slider-wrap .lbl{margin:0;white-space:nowrap}
+.map-slider-wrap input{flex:1}
+.map-slider-val{font-size:10px;color:var(–muted);min-width:28px;text-align:right}
+.map-seed-row{display:flex;gap:6px;margin-bottom:14px;align-items:center}
+.map-seed-lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(–muted);white-space:nowrap}
+.map-seed-input{background:var(–bg2);border:1px solid var(–border);color:var(–text);padding:5px 8px;border-radius:3px;font-size:11px;font-family:monospace;outline:none;flex:1;min-width:0}
+.map-canvas-outer{background:#f5f0e8;border:1px solid #2a2420;border-radius:3px;overflow:hidden;margin-bottom:12px}
+#map-canvas{display:block;width:100%;max-width:100%}
+.map-bottom-row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
 </style>
 
 </head>
@@ -158,70 +140,83 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 <div class="tabs">
   <button class="tab active" id="tab-builder" onclick="switchTab('builder')">Build</button>
   <button class="tab" id="tab-item" onclick="switchTab('item')">Item</button>
+  <button class="tab" id="tab-map" onclick="switchTab('map')">Map</button>
   <button class="tab" id="tab-artifact" onclick="switchTab('artifact')">Artifact</button>
 </div>
+
+<!-- MAP -->
+
+<div id="map-tab">
+  <div class="map-type-row">
+    <button class="map-type-btn active" data-mtype="dungeon" onclick="setMapType('dungeon',this)">Dungeon</button>
+    <button class="map-type-btn" data-mtype="cavern" onclick="setMapType('cavern',this)">Cavern</button>
+    <button class="map-type-btn" data-mtype="catacomb" onclick="setMapType('catacomb',this)">Catacomb</button>
+    <button class="rand-btn" style="margin-left:auto" onclick="rerollMap()">Reroll</button>
+  </div>
+  <div class="map-opts-row">
+    <div class="map-slider-wrap">
+      <span class="lbl">Rooms</span>
+      <input type="range" id="map-density" min="4" max="20" step="1" value="10">
+      <span class="map-slider-val" id="map-density-val">10</span>
+    </div>
+    <div class="map-slider-wrap">
+      <span class="lbl">Scale</span>
+      <input type="range" id="map-scale" min="1" max="3" step="1" value="2">
+      <span class="map-slider-val" id="map-scale-val">Med</span>
+    </div>
+  </div>
+  <div class="map-seed-row">
+    <span class="map-seed-lbl">Seed</span>
+    <input class="map-seed-input" id="map-seed" type="text" placeholder="auto" maxlength="24">
+    <button class="map-type-btn active" onclick="generateMap()">Draw</button>
+  </div>
+  <div class="map-canvas-outer">
+    <canvas id="map-canvas"></canvas>
+  </div>
+  <div class="map-bottom-row">
+    <button class="act-btn muted" onclick="rerollMap()">New Map</button>
+    <button class="act-btn accent" onclick="downloadMap()">Download PNG</button>
+  </div>
+</div>
+
+<!-- ITEM BUILDER -->
 
 <div id="item-builder">
   <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center;">
     <button class="rand-btn" onclick="itemRandomFill()">Random</button>
     <button class="discovered-btn" onclick="openDiscoveredItem()">Discovered</button>
-    <span class="filling-indicator" id="item-filling-indicator">Filling…</span>
+    <span class="filling-indicator" id="item-filling-indicator">Filling...</span>
   </div>
-
-  <div class="field">
-    <label class="lbl">Item Type</label>
-    <div class="item-type-row" id="item-type-row"></div>
-  </div>
-
-  <div class="field">
-    <label class="lbl">What It Actually Is</label>
-    <textarea id="item-truth" rows="3" placeholder="The DM truth — its real origin, purpose, or nature."></textarea>
-  </div>
+  <div class="field"><label class="lbl">Item Type</label><div class="item-type-row" id="item-type-row"></div></div>
+  <div class="field"><label class="lbl">What It Actually Is</label><textarea id="item-truth" rows="3" placeholder="The DM truth."></textarea></div>
   <div class="grid2">
-    <div class="field">
-      <label class="lbl">What a Finder Would Think</label>
-      <textarea id="item-surface" rows="3" placeholder="What any reasonable person would conclude upon finding it."></textarea>
-    </div>
-    <div class="field">
-      <label class="lbl">What It Has Done</label>
-      <textarea id="item-history" rows="3" placeholder="One or two things this object has been part of."></textarea>
-    </div>
+    <div class="field"><label class="lbl">What a Finder Would Think</label><textarea id="item-surface" rows="3" placeholder="What any reasonable person would conclude."></textarea></div>
+    <div class="field"><label class="lbl">What It Has Done</label><textarea id="item-history" rows="3" placeholder="One or two things this object has been part of."></textarea></div>
   </div>
-  <div class="field">
-    <label class="lbl">Its Hidden Property or Danger</label>
-    <textarea id="item-hidden" rows="2" placeholder="Something it does that isn't obvious. May be mechanical, may be narrative."></textarea>
-  </div>
-  <div class="field">
-    <label class="lbl">DM Note</label>
-    <textarea id="item-dm-note" rows="2" placeholder="What you want to remember about this item's role in the campaign."></textarea>
-  </div>
-
+  <div class="field"><label class="lbl">Its Hidden Property or Danger</label><textarea id="item-hidden" rows="2" placeholder="Something it does that isn't obvious."></textarea></div>
+  <div class="field"><label class="lbl">DM Note</label><textarea id="item-dm-note" rows="2" placeholder="What you want to remember."></textarea></div>
   <div id="item-error-msg" class="error-msg" style="display:none"></div>
-  <div class="gen-row">
-    <button class="gen-btn" id="item-gen-btn" onclick="generateItem()">Forge Item</button>
-  </div>
+  <div class="gen-row"><button class="gen-btn" id="item-gen-btn" onclick="generateItem()">Forge Item</button></div>
+</div>
+<div id="item-result">
+  <div id="item-loading-wrap" class="loading-wrap" style="display:none"><div class="loading-text" style="color:#7ab3d4">Shaping from memory...</div></div>
+  <div id="item-content" style="display:none"></div>
+  <div id="item-empty-wrap" class="empty-wrap"><p class="empty-lbl">No item yet.</p><button class="empty-link" onclick="switchTab('item')">Go to item builder</button></div>
 </div>
 
-<div id="item-result">
-  <div id="item-loading-wrap" class="loading-wrap" style="display:none">
-    <div class="loading-text" style="color:#7ab3d4">Shaping from memory…</div>
-  </div>
-  <div id="item-content" style="display:none"></div>
-  <div id="item-empty-wrap" class="empty-wrap">
-    <p class="empty-lbl">No item yet.</p>
-    <button class="empty-link" onclick="switchTab('item')">Go to item builder</button>
-  </div>
-</div>
+<!-- KEY SETUP -->
 
 <div id="key-setup">
   <div class="key-setup-title">API Key Required</div>
-  <div class="key-setup-desc">This tool calls the Anthropic API to generate artifacts. Paste your API key below — it will be saved in your browser and never sent anywhere except directly to Anthropic.</div>
+  <div class="key-setup-desc">This tool calls the Anthropic API to generate artifacts. Paste your API key below.</div>
   <label class="lbl">Your Anthropic API Key</label>
-  <input class="key-input" id="api-key-input" type="text" placeholder="sk-ant-api03-..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-  <div class="key-error" id="key-error">Key doesn't look right — should start with sk-ant-</div>
+  <input class="key-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..." />
+  <div class="key-error" id="key-error">Key doesn't look right.</div>
   <button class="key-btn" onclick="saveKey()">Enter the Foundry</button>
-  <div class="key-note">Get a key at console.anthropic.com. Your key is stored only in this browser's local storage and is never embedded in any file.</div>
+  <div class="key-note">Get a key at console.anthropic.com. Stored only in this browser.</div>
 </div>
+
+<!-- BUILDER -->
 
 <div id="builder">
   <div class="class-row" id="class-row"></div>
@@ -229,861 +224,335 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
     <button class="rand-btn" onclick="randomizeFill()">Random</button>
     <button class="unbound-btn" onclick="unboundFill()">Unbound</button>
     <button class="discovered-btn" onclick="openDiscovered()">Discovered</button>
-    <span class="filling-indicator" id="filling-indicator">Filling…</span>
+    <span class="filling-indicator" id="filling-indicator">Filling...</span>
   </div>
   <div class="voice-hint" id="voice-hint"></div>
-
-  <div class="field">
-    <label class="lbl">Subject</label>
-    <select id="subject-select"></select>
-  </div>
-
+  <div class="field"><label class="lbl">Subject</label><select id="subject-select"></select></div>
   <div class="divider"><div class="div-line"></div><span class="div-label">Truth Layer</span><div class="div-line"></div></div>
-
-  <div class="field">
-    <label class="lbl">What Actually Happened</label>
-    <textarea id="truthActual" rows="3" placeholder="The canon truth — known only to you as DM."></textarea>
-  </div>
+  <div class="field"><label class="lbl">What Actually Happened</label><textarea id="truthActual" rows="3"></textarea></div>
   <div class="grid2">
-    <div class="field">
-      <label class="lbl">Author Believes</label>
-      <textarea id="authorBelief" rows="3" placeholder="Their sincere, partial interpretation."></textarea>
-    </div>
-    <div class="field">
-      <label class="lbl">Author Withholds</label>
-      <textarea id="truthWithheld" rows="3" placeholder="What they know but won't say."></textarea>
-    </div>
+    <div class="field"><label class="lbl">Author Believes</label><textarea id="authorBelief" rows="3"></textarea></div>
+    <div class="field"><label class="lbl">Author Withholds</label><textarea id="truthWithheld" rows="3"></textarea></div>
   </div>
-  <div class="field">
-    <label class="lbl">Author's Blind Spot</label>
-    <textarea id="authorError" rows="2" placeholder="The error that shapes everything they write."></textarea>
-  </div>
-  <div class="field">
-    <label class="lbl">What the Reader Should Infer</label>
-    <textarea id="hiddenImplication" rows="2" placeholder="Never stated directly — lives in the gaps."></textarea>
-  </div>
-
+  <div class="field"><label class="lbl">Author Blind Spot</label><textarea id="authorError" rows="2"></textarea></div>
+  <div class="field"><label class="lbl">What the Reader Should Infer</label><textarea id="hiddenImplication" rows="2"></textarea></div>
   <div class="divider"><div class="div-line"></div><span class="div-label">Distortion + State</span><div class="div-line"></div></div>
-
   <div class="grid2">
-    <div class="field">
-      <label class="lbl">Truth Relation</label>
-      <select id="truthRelation"></select>
-    </div>
-    <div class="field">
-      <label class="lbl">Preservation</label>
-      <select id="preservation"></select>
-    </div>
-    <div class="field">
-      <label class="lbl">Distortion One</label>
-      <select id="distortion1"></select>
-    </div>
-    <div class="field">
-      <label class="lbl">Distortion Two</label>
-      <select id="distortion2"></select>
-    </div>
+    <div class="field"><label class="lbl">Truth Relation</label><select id="truthRelation"></select></div>
+    <div class="field"><label class="lbl">Preservation</label><select id="preservation"></select></div>
+    <div class="field"><label class="lbl">Distortion One</label><select id="distortion1"></select></div>
+    <div class="field"><label class="lbl">Distortion Two</label><select id="distortion2"></select></div>
   </div>
-
   <div class="range-row">
     <div class="range-lbl">Length <span id="length-display">260 words</span></div>
     <input type="range" id="length" min="120" max="480" step="20" value="260">
   </div>
-
   <div id="error-msg" class="error-msg" style="display:none"></div>
-  <div class="gen-row">
-    <button class="gen-btn" id="gen-btn" onclick="generate()">Generate Artifact</button>
-  </div>
+  <div class="gen-row"><button class="gen-btn" id="gen-btn" onclick="generate()">Generate Artifact</button></div>
 </div>
+
+<!-- ARTIFACT VIEW -->
 
 <div id="artifact-view">
   <div id="loading-wrap" class="loading-wrap" style="display:none">
-    <div class="loading-text">Drawing from the roots…</div>
+    <div class="loading-text">Drawing from the roots...</div>
     <div class="loading-class" id="loading-class"></div>
   </div>
   <div id="artifact-content" style="display:none"></div>
-  <div id="empty-wrap" class="empty-wrap">
-    <p class="empty-lbl">No artifact yet.</p>
-    <button class="empty-link" onclick="switchTab('builder')">Go to builder</button>
-  </div>
+  <div id="empty-wrap" class="empty-wrap"><p class="empty-lbl">No artifact yet.</p><button class="empty-link" onclick="switchTab('builder')">Go to builder</button></div>
 </div>
 
-<script>
-const WORLD_CANON = `You are generating in-universe artifacts for a D&D campaign called "Return of Mavashik," set in a world called Aldoris during its Dark Ages.
-
-CANONICAL WORLD FACTS:
-- The Zanaryth-Vora is a cosmic law — not an agent or entity. Cannot be served or controlled.
-- Mavashik is Sylaenor — oldest living reflective mind. His hubris: believing he serves the Zanaryth-Vora rather than being subject to it.
-- The Heartwood Tree of Elarien sacrificed itself — the city died anyway. The stump remains: bone-pale, vast, dead for centuries. The roots are still doing something no instrument has named.
-- Elarien: ruined city built in the Heartwood's crater. Named "ancient peace" before its fall.
-- The Weave (Aelryth): fundamental fabric permitting matter to cohere. Thinned since the Heartwood's death.
-- The Thal'vorn: six fungi in the catacombs — the mechanism for entering the tree's accumulated memory.
-  - Kharaveth: fire, red-amber, burns without heat
-  - Silthmorn: earth, heavy, moss-layered
-  - Vaelthyn: air, translucent, drifts, dissolves within hours
-  - Isvoral: water, bioluminescent azure pulse
-  - Vor'ethal: void, polished, reflects light wrongly
-  - Thal'vorn (balance): perfectly symmetrical, grows only in pairs
-- The Isaryn: six chambers feeding into a central Darkness Room. A curriculum, not a tomb.
-- The Silver Flame (Miranor): guardians of the living world.
-- The Vorazan: the Long War — named for what the age was.
-- Ssolveth: drow entity, corrupts through despair, governs a conquered surface city.
-- Eldraxis: the void, pre-existence — untranslatable.
-- Uldar: language of Eldraxis. Present tense only. Everything already complete. No questions.
-- The Sylvanox: corrupted elves — those of origin who turned to the void.
-- The Vaellyth (Life Stones): built from Mirelith. Six exist. Cannot be destroyed.
-
-WRITING STYLE:
-- Archaic, poetic, weighted. Grief underneath.
-- Convey truth through metaphor. Never explain what can be felt.
-- Fragments acceptable. Compression over explanation.
-- No modern tone. Ever.`;
-
-const CLASSES = {
-  archival: { label: "Andorian Archival Record", voice: "High Andorian — formal, ordered, grief-controlled" },
-  testimony: { label: "Silver Flame Testimony", voice: "War-Witness — blunt, haunted, survivor's cadence" },
-  monastic: { label: "Monastic Manuscript", voice: "Late Monastic — reverent, damaged, uncertain of its source" },
-  doctrinal: { label: "Vey'kar Doctrinal Fragment", voice: "Corrupted — seductive, reframing horror as initiation" },
-  field: { label: "Field Report", voice: "Expedition Practical — terse, observational, unsettled at the edges" },
-  inscription: { label: "Ritual Inscription", voice: "Threshold — imperative, sparse, measuring" },
-  gloss: { label: "Scholar's Gloss", voice: "Analytic — precise, cautious, knows the limits of evidence" },
-  oral: { label: "Oral Legend", voice: "Mythic-Fragmentary — old firelight, ground keeps its counsel" },
-  uldar: { label: "Uldar Transmission", voice: "Eldraxian — present tense only, no questions, states already complete" },
-};
-
-const SUBJECTS = [
-  "The roots beneath the dead Heartwood stump of Elarien",
-  "The fall of Elarien — why the tree's sacrifice failed to save the city",
-  "The Darkness Room — the central chamber of the Isaryn",
-  "Vor'ethal and the word it repeats at the edge of perception",
-  "The first concealment of a Vaellyth (Life Stone)",
-  "Ssolveth and the conquered surface city",
-  "Why the Vorazan ended the Andorians instead of Mavashik",
-  "The Sorlithan — what it cost the Andorians to make them",
-  "The Zanaryth-Vora and what no living mind has understood about it",
-  "The Sylvanox — what they were before they turned",
-  "Mavashik's belief that he serves the Zanaryth-Vora",
-  "The last Andorian archivist and what they sealed in the Isaryn",
-];
-
-const TRUTH_RELATIONS = ["Witnessed truth","Institutional truth","Devotional truth","Corrupted truth","Mythic truth","False surface / true undertow"];
-const DISTORTIONS = ["translation loss","political self-censorship","devotional reinterpretation","trauma distortion","taboo omission","hostile recopying","physical damage","memory failure","mythic embellishment"];
-const PRESERVATION = ["pristine","lightly damaged","fragmentary","heavily fragmentary","translated and annotated","quoted only in later source","disputed authenticity"];
-
-const pick = arr => arr[Math.floor(Math.random() * arr.length)];
-let currentClass = 'monastic';
-let generatedOutput = '';
-
-// Init selects
-function populateSelect(id, options, selected) {
-  const el = document.getElementById(id);
-  el.innerHTML = '';
-  options.forEach(o => {
-    const opt = document.createElement('option');
-    opt.value = o; opt.textContent = o;
-    if (o === selected) opt.selected = true;
-    el.appendChild(opt);
-  });
-}
-
-function initClassButtons() {
-  const row = document.getElementById('class-row');
-  row.innerHTML = '';
-  Object.keys(CLASSES).forEach(k => {
-    const btn = document.createElement('button');
-    btn.className = 'class-btn' + (k === currentClass ? ' active' : '');
-    btn.textContent = k;
-    btn.onclick = () => { currentClass = k; initClassButtons(); document.getElementById('voice-hint').textContent = CLASSES[k].voice; };
-    row.appendChild(btn);
-  });
-
-}
-
-function init() {
-  initClassButtons();
-  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
-  populateSelect('subject-select', SUBJECTS, SUBJECTS[0]);
-  populateSelect('truthRelation', TRUTH_RELATIONS, 'Devotional truth');
-  populateSelect('preservation', PRESERVATION, 'fragmentary');
-  populateSelect('distortion1', DISTORTIONS, 'devotional reinterpretation');
-  populateSelect('distortion2', DISTORTIONS, 'translation loss');
-
-  document.getElementById('truthActual').value = "The roots retained partial consciousness after the Heartwood sacrificed itself. They are not dormant. They are waiting.";
-  document.getElementById('authorBelief').value = "The tree is wholly dead. What the roots do is residual and fading.";
-  document.getElementById('truthWithheld').value = "The monks continue to use the site despite the roots responding to presence.";
-  document.getElementById('authorError').value = "Assumes benevolence because the tree was benevolent.";
-  document.getElementById('hiddenImplication').value = "The roots are not fading. They are learning.";
-
-  document.getElementById('length').addEventListener('input', e => {
-    document.getElementById('length-display').textContent = e.target.value + ' words';
-  });
-}
-
-function randomize() {
-  currentClass = pick(Object.keys(CLASSES));
-  initClassButtons();
-  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
-  document.getElementById('subject-select').value = pick(SUBJECTS);
-  document.getElementById('truthRelation').value = pick(TRUTH_RELATIONS);
-  document.getElementById('preservation').value = pick(PRESERVATION);
-  document.getElementById('distortion1').value = pick(DISTORTIONS);
-  document.getElementById('distortion2').value = pick(DISTORTIONS);
-  const len = pick([180, 240, 300, 380]);
-  document.getElementById('length').value = len;
-  document.getElementById('length-display').textContent = len + ' words';
-  ['truthActual','authorBelief','truthWithheld','authorError','hiddenImplication'].forEach(id => document.getElementById(id).value = '');
-  generatedOutput = '';
-  switchTab('builder');
-}
-
-function switchTab(tab) {
-  ['builder','item-builder','item-result','artifact-view'].forEach(id => {
-    document.getElementById(id).style.display = 'none';
-  });
-  if (tab === 'builder') document.getElementById('builder').style.display = 'block';
-  else if (tab === 'item') document.getElementById('item-builder').style.display = 'block';
-  else if (tab === 'item-result') document.getElementById('item-result').style.display = 'block';
-  else if (tab === 'artifact') document.getElementById('artifact-view').style.display = 'block';
-
-  document.getElementById('tab-builder').classList.toggle('active', tab === 'builder');
-  document.getElementById('tab-item').classList.toggle('active', tab === 'item' || tab === 'item-result');
-  document.getElementById('tab-artifact').classList.toggle('active', tab === 'artifact');
-}
-
-async function generate() {
-  const truthActual = document.getElementById('truthActual').value.trim();
-  if (!truthActual) return;
-
-  const subject = document.getElementById('subject-select').value;
-  const authorBelief = document.getElementById('authorBelief').value;
-  const truthWithheld = document.getElementById('truthWithheld').value;
-  const authorError = document.getElementById('authorError').value;
-  const hiddenImplication = document.getElementById('hiddenImplication').value;
-  const truthRelation = document.getElementById('truthRelation').value;
-  const distortion1 = document.getElementById('distortion1').value;
-  const distortion2 = document.getElementById('distortion2').value;
-  const preservation = document.getElementById('preservation').value;
-  const length = document.getElementById('length').value;
-
-  switchTab('artifact');
-  document.getElementById('loading-wrap').style.display = 'block';
-  document.getElementById('artifact-content').style.display = 'none';
-  document.getElementById('empty-wrap').style.display = 'none';
-  document.getElementById('loading-class').textContent = CLASSES[currentClass].label;
-  document.getElementById('tab-artifact').textContent = 'Artifact …';
-
-  const system = `${WORLD_CANON}\n\nGenerate a single in-universe artifact.\nClass: ${CLASSES[currentClass].label}\nVoice: ${CLASSES[currentClass].voice}\nSubject: ${subject}\nWhat actually happened: ${truthActual}\nWhat the author believes: ${authorBelief}\nWhat the author withholds: ${truthWithheld}\nThe author's blind spot: ${authorError}\nTruth relation: ${truthRelation}\nDistortions: ${distortion1}, ${distortion2}\nPreservation: ${preservation}\nHidden implication (never state directly): ${hiddenImplication}\nLength: ~${length} words\n\nRULES: Write ONLY the artifact. No preamble. Never state the hidden implication directly. If fragmentary, use [line lost] or [illegible]. End with — [Author name]. No modern vocabulary.`;
-
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": getKey(), "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system,
-        messages: [{ role: "user", content: "Generate the artifact." }]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.find(b => b.type === "text")?.text || "";
-    if (!text) throw new Error("No content");
-    generatedOutput = text;
-    renderArtifact(text, preservation, truthRelation, hiddenImplication);
-  } catch(e) {
-    document.getElementById('loading-wrap').style.display = 'none';
-    document.getElementById('empty-wrap').style.display = 'block';
-    document.getElementById('error-msg').textContent = 'Generation failed. Check your connection and try again.';
-    document.getElementById('error-msg').style.display = 'block';
-    switchTab('builder');
-  } finally {
-    document.getElementById('tab-artifact').textContent = 'Artifact';
-  }
-}
-
-function renderArtifact(text, preservation, truthRelation, hiddenImplication) {
-  document.getElementById('loading-wrap').style.display = 'none';
-
-  const wrap = document.getElementById('artifact-content');
-  wrap.innerHTML = '';
-  wrap.className = 'fade-up';
-
-  // Meta
-  const meta = document.createElement('div');
-  meta.className = 'art-meta';
-  const tag = document.createElement('span');
-  tag.className = 'art-tag'; tag.textContent = CLASSES[currentClass].label;
-  const state = document.createElement('span');
-  state.className = 'art-state'; state.textContent = preservation + ' · ' + truthRelation;
-  meta.appendChild(tag); meta.appendChild(state);
-  wrap.appendChild(meta);
-
-  // Body
-  const body = document.createElement('div');
-  body.className = 'art-body';
-  text.split('\n').forEach(line => {
-    if (!line.trim()) { const sp = document.createElement('div'); sp.className = 'art-spacer'; body.appendChild(sp); return; }
-    const p = document.createElement('p');
-    const isLost = line.includes('[line lost]') || line.includes('[illegible]');
-    p.className = isLost ? 'art-lost' : 'art-line';
-    p.textContent = line;
-    body.appendChild(p);
-  });
-  wrap.appendChild(body);
-
-  // DM Note
-  if (hiddenImplication) {
-    const note = document.createElement('div');
-    note.className = 'dm-note';
-    const lbl = document.createElement('div'); lbl.className = 'dm-note-lbl'; lbl.textContent = 'DM Note';
-    const txt = document.createElement('p'); txt.className = 'dm-note-text'; txt.textContent = hiddenImplication;
-    note.appendChild(lbl); note.appendChild(txt);
-    wrap.appendChild(note);
-  }
-
-  // Actions
-  const actions = document.createElement('div');
-  actions.className = 'art-actions';
-
-  const editBtn = document.createElement('button');
-  editBtn.className = 'act-btn muted'; editBtn.textContent = '← Edit';
-  editBtn.onclick = () => switchTab('builder');
-
-  const regenBtn = document.createElement('button');
-  regenBtn.className = 'act-btn muted'; regenBtn.textContent = 'Regenerate';
-  regenBtn.onclick = () => generate();
-
-  const copyBtn = document.createElement('button');
-  copyBtn.className = 'act-btn accent'; copyBtn.textContent = 'Copy';
-  copyBtn.onclick = async () => {
-    try { await navigator.clipboard.writeText(generatedOutput); } catch {}
-    copyBtn.textContent = 'Copied';
-    setTimeout(() => copyBtn.textContent = 'Copy', 1600);
-  };
-
-  actions.appendChild(editBtn); actions.appendChild(regenBtn); actions.appendChild(copyBtn);
-  wrap.appendChild(actions);
-
-  wrap.style.display = 'block';
-}
-
-
-async function callAPI(system, userMsg) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-api-key": getKey(), "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-    body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 800, system, messages: [{ role: "user", content: userMsg }] })
-  });
-  const data = await res.json();
-  return data.content?.find(b => b.type === "text")?.text || "";
-}
-
-function setFillingState(on) {
-  document.getElementById('filling-indicator').style.display = on ? 'inline' : 'none';
-}
-
-function applyFilledFields(parsed) {
-  if (parsed.subject) {
-    // Add as first option and select it
-    const sel = document.getElementById('subject-select');
-    const opt = document.createElement('option');
-    opt.value = parsed.subject; opt.textContent = parsed.subject;
-    sel.insertBefore(opt, sel.firstChild);
-    sel.value = parsed.subject;
-  }
-  if (parsed.truthActual) document.getElementById('truthActual').value = parsed.truthActual;
-  if (parsed.authorBelief) document.getElementById('authorBelief').value = parsed.authorBelief;
-  if (parsed.truthWithheld) document.getElementById('truthWithheld').value = parsed.truthWithheld;
-  if (parsed.authorError) document.getElementById('authorError').value = parsed.authorError;
-  if (parsed.hiddenImplication) document.getElementById('hiddenImplication').value = parsed.hiddenImplication;
-}
-
-async function randomizeFill() {
-  // First randomize the dropdowns
-  currentClass = pick(Object.keys(CLASSES));
-  initClassButtons();
-  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
-  document.getElementById('subject-select').value = pick(SUBJECTS);
-  document.getElementById('truthRelation').value = pick(TRUTH_RELATIONS);
-  document.getElementById('preservation').value = pick(PRESERVATION);
-  document.getElementById('distortion1').value = pick(DISTORTIONS);
-  document.getElementById('distortion2').value = pick(DISTORTIONS);
-  const len = pick([180, 240, 300, 380]);
-  document.getElementById('length').value = len;
-  document.getElementById('length-display').textContent = len + ' words';
-
-  setFillingState(true);
-  const subject = document.getElementById('subject-select').value;
-  const system = `${WORLD_CANON}
-
-You are filling in the truth layer fields for a lore artifact builder. Given the subject and document class below, generate fitting content for each field. Respond ONLY with valid JSON, no preamble, no markdown fences.
-
-Document class: ${CLASSES[currentClass].label}
-Subject: ${subject}
-
-Return exactly this JSON shape:
-{
-  "truthActual": "...",
-  "authorBelief": "...",
-  "truthWithheld": "...",
-  "authorError": "...",
-  "hiddenImplication": "..."
-}
-
-Keep each field to 1-3 sentences. Stay within Aldoris canon. Make the hidden implication something the reader must infer — never obvious.`;
-
-  try {
-    const raw = await callAPI(system, "Fill the fields.");
-    const clean = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
-    const parsed = JSON.parse(clean);
-    applyFilledFields(parsed);
-  } catch(e) { console.error(e); }
-  setFillingState(false);
-}
-
-async function unboundFill() {
-  // Randomize dropdowns
-  currentClass = pick(Object.keys(CLASSES));
-  initClassButtons();
-  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
-  document.getElementById('truthRelation').value = pick(TRUTH_RELATIONS);
-  document.getElementById('preservation').value = pick(PRESERVATION);
-  document.getElementById('distortion1').value = pick(DISTORTIONS);
-  document.getElementById('distortion2').value = pick(DISTORTIONS);
-  const len = pick([180, 240, 300, 380]);
-  document.getElementById('length').value = len;
-  document.getElementById('length-display').textContent = len + ' words';
-
-  setFillingState(true);
-  const system = `You are filling in fields for a historical lore artifact generator. Invent a completely original fictional world, civilization, or mythic event — not Tolkien, not D&D, not any existing IP. It should feel ancient, specific, and strange.
-
-Document class: ${CLASSES[currentClass].label}
-
-Respond ONLY with valid JSON, no preamble, no markdown fences:
-{
-  "subject": "A short evocative subject line for the artifact",
-  "truthActual": "What actually happened — the hidden canon truth",
-  "authorBelief": "What the author of this document sincerely believes",
-  "truthWithheld": "What the author knows but refuses to write",
-  "authorError": "The blind spot that shapes everything they write",
-  "hiddenImplication": "What an attentive reader should infer — never stated directly"
-}
-
-Each field: 1-3 sentences. Archaic weight. Grief underneath. No modern tone.`;
-
-  try {
-    const raw = await callAPI(system, "Generate unbound artifact fields.");
-    const clean = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
-    const parsed = JSON.parse(clean);
-    applyFilledFields(parsed);
-  } catch(e) { console.error(e); }
-  setFillingState(false);
-}
-
-
-function openDiscovered() {
-  document.getElementById('discovered-modal').style.display = 'block';
-  setTimeout(() => document.getElementById('disc-context').focus(), 100);
-}
-
-function closeDiscovered() {
-  document.getElementById('discovered-modal').style.display = 'none';
-}
-
-async function runDiscovered() {
-  const context = document.getElementById('disc-context').value.trim();
-  if (!context) return;
-  const btn = document.getElementById('disc-go-btn');
-  btn.disabled = true; btn.textContent = 'Reading…';
-
-  const classKeys = Object.keys(CLASSES);
-  const classOptions = classKeys.map(k => `${k}: ${CLASSES[k].label} (${CLASSES[k].voice})`).join('\n');
-
-  const system = `${WORLD_CANON}
-
-You are deciding what kind of document was found and filling the truth layer fields for a lore artifact. A player or DM has described where the document was physically discovered. Use that context to determine the most fitting document class and generate appropriate content.
-
-Available document classes:
-${classOptions}
-
-Respond ONLY with valid JSON, no preamble, no markdown fences:
-{
-  "suggestedClass": "one of the class keys exactly as listed above",
-  "subject": "A short evocative subject line for what this document is about",
-  "truthActual": "The canon truth — what actually happened",
-  "authorBelief": "What the author sincerely believes",
-  "truthWithheld": "What the author knows but will not write",
-  "authorError": "The blind spot shaping everything they wrote",
-  "hiddenImplication": "What an attentive reader should infer — never stated directly"
-}
-
-Each field: 1-3 sentences. Stay within Aldoris canon. Let the discovery location shape the tone and content deeply.`;
-
-  try {
-    const raw = await callAPI(system, `Found here: ${context}`);
-    const clean = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
-    const parsed = JSON.parse(clean);
-
-    // Apply suggested class
-    if (parsed.suggestedClass && CLASSES[parsed.suggestedClass]) {
-      currentClass = parsed.suggestedClass;
-      initClassButtons();
-      document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
-    }
-
-    // Apply all fields
-    applyFilledFields(parsed);
-
-    closeDiscovered();
-    document.getElementById('disc-context').value = '';
-  } catch(e) {
-    console.error(e);
-  }
-
-  btn.disabled = false; btn.textContent = 'Find It';
-}
-
-
-// ── ITEM TYPES ──
-const ITEM_TYPES = ['weapon','armor','trinket','vessel','token','inscription','reagent','relic','key','fragment','mundane'];
-let currentItemType = 'trinket';
-
-function initItemBuilder() {
-  const row = document.getElementById('item-type-row');
-  if (!row) return;
-  row.innerHTML = '';
-  ITEM_TYPES.forEach(t => {
-    const btn = document.createElement('button');
-    const isMundane = t === 'mundane';
-    const isActive = t === currentItemType;
-    btn.className = 'item-type-btn' + (isActive ? (isMundane ? ' mundane-active' : ' active') : '');
-    btn.textContent = t;
-    btn.onclick = () => { currentItemType = t; initItemBuilder(); };
-    row.appendChild(btn);
-  });
-}
-
-// Item randomization seed tables
-const ITEM_MATERIALS = ['bone','obsidian','pale iron','tarnished silver','black glass','petrified wood','salt-white stone','corroded bronze','woven shadow-fiber','dried root','cold copper','cracked ivory','ore that predates the Weave'];
-const ITEM_CONDITIONS = ['pristine but wrong','worn smooth by too many hands','partially melted','cracked and repaired badly','carved over with something newer','still warm','heavier than it should be','lighter than it looks','refuses to stay still','leaves residue','smells of somewhere else'];
-const ITEM_ORIGINS = ['Andorian','Silver Flame','pre-Vorazan','Sylvanox','monastic','unknown maker','made in the Isaryn','carried out of Elarien','never made by hands','made once and never again'];
-const ITEM_LASTHELD = ['a monk who did not survive','a soldier who buried it intentionally','a child','someone who was searching for something else','an archivist','a creature that should not have had hands','no one — it was placed, not carried','multiple owners in quick succession'];
-const ITEM_PURPOSES = ['concealment','communication','measurement','binding','offering','protection that failed','marking','memory','destruction of something specific','unknown — the maker left no record'];
-
-async function generateItem() {
-  const truth = document.getElementById('item-truth').value.trim();
-  if (!truth) return;
-
-  const surface = document.getElementById('item-surface').value;
-  const history = document.getElementById('item-history').value;
-  const hidden = document.getElementById('item-hidden').value;
-  const dmNote = document.getElementById('item-dm-note').value;
-
-  const material = pick(currentItemType === 'mundane'
-    ? ['wood','iron','leather','cloth','clay','tin','copper','glass','rope','wax','straw','paper']
-    : ITEM_MATERIALS);
-  const condition = pick(currentItemType === 'mundane'
-    ? ['old but functional','repaired more than once','initialed or marked by its owner','well-used','recently broken','tied shut with cord','wrapped in cloth','smells of smoke or food or animal','has something dried on it','one part replaced with something that doesn\'t quite match']
-    : ITEM_CONDITIONS);
-  const origin = pick(ITEM_ORIGINS);
-  const lastHeld = pick(currentItemType === 'mundane'
-    ? ['a farmer or laborer','a soldier on a long march','a traveler who didn\'t make it','a child','a cook or healer','a merchant','someone who owned very little','someone who owned too much and lost it']
-    : ITEM_LASTHELD);
-  const purpose = pick(currentItemType === 'mundane'
-    ? ['eating or drinking','carrying something','keeping something dry','starting a fire','measuring or marking','cutting or fastening','storing something small','keeping a record']
-    : ITEM_PURPOSES);
-
-  const isMundane = currentItemType === 'mundane';
-
-  switchTab('item-result');
-  document.getElementById('item-loading-wrap').style.display = 'block';
-  document.getElementById('item-content').style.display = 'none';
-  document.getElementById('item-empty-wrap').style.display = 'none';
-  document.getElementById('tab-item').textContent = 'Item …';
-
-  const mundaneInstructions = isMundane ? `
-MUNDANE ITEM RULES — these override everything else:
-- This is an ordinary object. It has no magical properties, no cosmic significance, no poetic destiny.
-- Its interest comes entirely from who owned it and what they were doing. Not from what it is.
-- The name should be plain: "Tin Cup", "Folded Belt", "Short Knife". No mystical titles.
-- Appearance: describe it like you are holding it. Dents, repairs, stains, wear. Be specific.
-- Properties should be practical and human: who owned it, what was in it, what it was used for last, what the finder might do with it.
-- Lore: a quiet sentence or two. Someone\'s daily life. No drama.
-- One property may hint at something slightly unusual — not magical, just odd. A name scratched inside. A compartment. A stain that won\'t come out. That\'s the limit.
-- FORBIDDEN: cosmic language, mystical properties, references to the Weave or void, words like "ancient", "sacred", "bound", "cursed", "forged in", "imbued".` : `
-GROUNDED ITEM RULES:
-- This item exists in the physical world. It has weight, wear, and history.
-- Avoid cosmic or purple language. No "forged from starlight", no "cuts the bonds between", no mystical metaphors that don\'t cash out in something real.
-- The item\'s power or strangeness should be specific and understated. Show it through what the item has done, not through poetry about what it is.
-- If it has an unusual property, describe the effect plainly: what happens, to what, under what circumstances.
-- Lore should read like something a person wrote, not a game description. Specific. A little tired. Someone who actually held this thing.
-- FORBIDDEN: "forged from [cosmic material]", "cuts not flesh but [abstract concept]", "born of [mythic event]", destiny language, prophecy language.`;
-
-  const system = \`\${WORLD_CANON}
-
-Generate a physical item found in the world of Aldoris. Output a stat-block style entry.
-
-Item type: \${currentItemType}
-What it actually is: \${truth}
-What a finder would think: \${surface}
-What it has been part of: \${history}
-Hidden property or danger: \${hidden}
-
-GENERATION SEEDS — use these to shape this specific instance:
-- Primary material: \${material}
-- Physical condition: \${condition}
-- Origin tradition: \${origin}
-- Last held by: \${lastHeld}
-- Original purpose: \${purpose}
-\${mundaneInstructions}
-
-Respond ONLY with valid JSON, no preamble, no markdown fences:
-{
-  "name": "Plain, specific name for the object",
-  "type": "What it physically is — material and form",
-  "appearance": "2-3 sentences. What the hands feel and the eyes see. Specific details, wear, markings.",
-  "properties": [
-    { "key": "Property name", "value": "Specific, grounded description" }
-  ],
-  "lore": "1-3 sentences written as if by someone who held it. Quiet. Specific. Human.",
-  "dm_note": "What this item means or might mean. 1-2 sentences."
-}
-
-Properties: 3-5 entries. Specific and physical. No two items should feel alike.\`;
-
-  try {
-    const raw = await callAPI(system, "Generate the item.");
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    renderItem(parsed, dmNote || parsed.dm_note);
-  } catch(e) {
-    console.error(e);
-    document.getElementById('item-loading-wrap').style.display = 'none';
-    document.getElementById('item-empty-wrap').style.display = 'block';
-    document.getElementById('item-error-msg').textContent = 'Generation failed.';
-    document.getElementById('item-error-msg').style.display = 'block';
-    switchTab('item');
-  } finally {
-    document.getElementById('tab-item').textContent = 'Item';
-  }
-}
-
-let lastItemOutput = '';
-
-function renderItem(data, dmNote) {
-  document.getElementById('item-loading-wrap').style.display = 'none';
-  lastItemOutput = JSON.stringify(data, null, 2);
-
-  const wrap = document.getElementById('item-content');
-  wrap.innerHTML = '';
-  wrap.className = 'fade-up';
-
-  const block = document.createElement('div');
-  block.className = 'stat-block';
-
-  // Header
-  const header = document.createElement('div');
-  header.className = 'stat-block-header';
-  header.innerHTML = `<div class="stat-name">${data.name || 'Unnamed'}</div><div class="stat-type">${data.type || currentItemType}</div>`;
-  block.appendChild(header);
-
-  // Appearance
-  const divA = document.createElement('div'); divA.className = 'stat-divider'; block.appendChild(divA);
-  const secA = document.createElement('div'); secA.className = 'stat-section';
-  secA.innerHTML = `<div class="stat-row"><span class="stat-key">Appearance</span><span class="stat-val">${data.appearance || ''}</span></div>`;
-  block.appendChild(secA);
-
-  // Properties
-  if (data.properties && data.properties.length) {
-    const divP = document.createElement('div'); divP.className = 'stat-divider'; block.appendChild(divP);
-    const secP = document.createElement('div'); secP.className = 'stat-section';
-    data.properties.forEach(p => {
-      const row = document.createElement('div'); row.className = 'stat-row';
-      row.innerHTML = `<span class="stat-key">${p.key}</span><span class="stat-val">${p.value}</span>`;
-      secP.appendChild(row);
-    });
-    block.appendChild(secP);
-  }
-
-  // Lore
-  if (data.lore) {
-    const lore = document.createElement('div'); lore.className = 'stat-lore';
-    lore.innerHTML = `<div class="stat-lore-label">Lore</div><div class="stat-lore-text">${data.lore}</div>`;
-    block.appendChild(lore);
-  }
-
-  // DM Note
-  if (dmNote) {
-    const dm = document.createElement('div'); dm.className = 'stat-dm';
-    dm.innerHTML = `<div class="stat-dm-label">DM Note</div><div class="stat-dm-text">${dmNote}</div>`;
-    block.appendChild(dm);
-  }
-
-  wrap.appendChild(block);
-
-  // Actions
-  const actions = document.createElement('div'); actions.className = 'art-actions';
-  const editBtn = document.createElement('button'); editBtn.className = 'act-btn muted'; editBtn.textContent = '← Edit'; editBtn.onclick = () => switchTab('item');
-  const regenBtn = document.createElement('button'); regenBtn.className = 'act-btn muted'; regenBtn.textContent = 'Reforge'; regenBtn.onclick = generateItem;
-  const copyBtn = document.createElement('button'); copyBtn.className = 'act-btn accent'; copyBtn.textContent = 'Copy';
-  copyBtn.onclick = async () => {
-    // Copy as readable text
-    const lines = [`${data.name} (${data.type})`, '', data.appearance, ''];
-    (data.properties||[]).forEach(p => lines.push(`${p.key}: ${p.value}`));
-    if (data.lore) { lines.push(''); lines.push(data.lore); }
-    if (dmNote) { lines.push(''); lines.push('[DM] ' + dmNote); }
-    try { await navigator.clipboard.writeText(lines.join('\n')); } catch {}
-    copyBtn.textContent = 'Copied'; setTimeout(() => copyBtn.textContent = 'Copy', 1600);
-  };
-  actions.appendChild(editBtn); actions.appendChild(regenBtn); actions.appendChild(copyBtn);
-  wrap.appendChild(actions);
-
-  wrap.style.display = 'block';
-}
-
-async function itemRandomFill() {
-  currentItemType = pick(ITEM_TYPES);
-  initItemBuilder();
-  document.getElementById('item-filling-indicator').style.display = 'inline';
-
-  const system = `${WORLD_CANON}
-
-Fill the item builder fields for a random item from the world of Aldoris. Type: ${currentItemType}.
-
-Respond ONLY with valid JSON, no preamble, no markdown fences:
-{
-  "truth": "What the item actually is — its real origin and nature",
-  "surface": "What a finder would reasonably conclude",
-  "history": "One or two things this object has been part of",
-  "hidden": "A hidden property or danger — mechanical or narrative",
-  "dmNote": "What a DM should remember about this item"
-}
-Each field 1-2 sentences. Archaic weight.`;
-
-  try {
-    const raw = await callAPI(system, "Fill item fields.");
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    if (parsed.truth) document.getElementById('item-truth').value = parsed.truth;
-    if (parsed.surface) document.getElementById('item-surface').value = parsed.surface;
-    if (parsed.history) document.getElementById('item-history').value = parsed.history;
-    if (parsed.hidden) document.getElementById('item-hidden').value = parsed.hidden;
-    if (parsed.dmNote) document.getElementById('item-dm-note').value = parsed.dmNote;
-  } catch(e) { console.error(e); }
-  document.getElementById('item-filling-indicator').style.display = 'none';
-}
-
-// Discovered modal type toggle
-let discType = 'document';
-function setDiscType(t) {
-  discType = t;
-  const docBtn = document.getElementById('disc-type-doc');
-  const itemBtn = document.getElementById('disc-type-item');
-  if (t === 'document') {
-    docBtn.style.background = '#3c1a08'; docBtn.style.color = '#fde68a'; docBtn.style.outline = '1px solid #92400e';
-    itemBtn.style.background = '#141210'; itemBtn.style.color = '#57534e'; itemBtn.style.outline = '1px solid #1c1917';
-  } else {
-    itemBtn.style.background = '#0f1a27'; itemBtn.style.color = '#7ab3d4'; itemBtn.style.outline = '1px solid #2a5a7a';
-    docBtn.style.background = '#141210'; docBtn.style.color = '#57534e'; docBtn.style.outline = '1px solid #1c1917';
-  }
-}
-
-function openDiscoveredItem() {
-  discType = 'item';
-  setDiscType('item');
-  openDiscovered();
-}
-
-async function runDiscoveredAuto() {
-  if (discType === 'item') await runDiscoveredItem();
-  else await runDiscovered();
-}
-
-async function runDiscoveredItem() {
-  const context = document.getElementById('disc-context').value.trim();
-  if (!context) return;
-  const btn = document.getElementById('disc-go-btn');
-  btn.disabled = true; btn.textContent = 'Reading…';
-
-  const typeOptions = ITEM_TYPES.join(', ');
-  const system = `${WORLD_CANON}
-
-An item was physically discovered in the world. Based on the discovery location, decide what type of item it is and fill in all builder fields.
-
-Available item types: ${typeOptions}
-
-Respond ONLY with valid JSON, no preamble, no markdown fences:
-{
-  "itemType": "one of the item types listed above",
-  "truth": "What the item actually is",
-  "surface": "What a finder would conclude",
-  "history": "What it has been part of",
-  "hidden": "Its hidden property or danger",
-  "dmNote": "What the DM should remember"
-}
-Let the discovery location deeply shape everything. Stay within Aldoris canon.`;
-
-  try {
-    const raw = await callAPI(system, `Found here: ${context}`);
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-    if (parsed.itemType && ITEM_TYPES.includes(parsed.itemType)) {
-      currentItemType = parsed.itemType;
-      initItemBuilder();
-    }
-    if (parsed.truth) document.getElementById('item-truth').value = parsed.truth;
-    if (parsed.surface) document.getElementById('item-surface').value = parsed.surface;
-    if (parsed.history) document.getElementById('item-history').value = parsed.history;
-    if (parsed.hidden) document.getElementById('item-hidden').value = parsed.hidden;
-    if (parsed.dmNote) document.getElementById('item-dm-note').value = parsed.dmNote;
-    closeDiscovered();
-    document.getElementById('disc-context').value = '';
-    switchTab('item');
-  } catch(e) { console.error(e); }
-  btn.disabled = false; btn.textContent = 'Find It';
-}
-
-function getKey() { return localStorage.getItem('lf_api_key') || ''; }
-
-function saveKey() {
-  const val = document.getElementById('api-key-input').value.trim();
-  if (!val.startsWith('sk-ant-')) {
-    document.getElementById('key-error').style.display = 'block';
-    return;
-  }
-  localStorage.setItem('lf_api_key', val);
-  document.getElementById('key-setup').style.display = 'none';
-  document.getElementById('builder').style.display = 'block';
-  init();
-  initItemBuilder();
-}
-
-function checkKey() {
-  if (getKey()) {
-    document.getElementById('key-setup').style.display = 'none';
-    document.getElementById('builder').style.display = 'block';
-    init();
-    initItemBuilder();
-  }
-}
-
-checkKey();
-</script>
+<!-- DISCOVERED MODAL -->
 
 <div id="discovered-modal">
   <div class="disc-inner">
     <div class="disc-title">Discovered</div>
-    <div class="disc-desc">Describe where this was found. The Foundry will decide what it is and fill everything in.</div>
+    <div class="disc-desc">Describe where this was found.</div>
     <div style="display:flex;gap:6px;margin-bottom:12px;">
       <button id="disc-type-doc" onclick="setDiscType('document')" style="flex:1;padding:7px;border-radius:3px;border:none;cursor:pointer;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-family:'IM Fell English',serif;background:#3c1a08;color:#fde68a;outline:1px solid #92400e;">Document</button>
       <button id="disc-type-item" onclick="setDiscType('item')" style="flex:1;padding:7px;border-radius:3px;border:none;cursor:pointer;font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-family:'IM Fell English',serif;background:#141210;color:#57534e;outline:1px solid #1c1917;">Item</button>
     </div>
     <label class="lbl">Where was it found?</label>
-    <textarea class="disc-textarea" id="disc-context" rows="4" placeholder="e.g. Wedged behind a loose stone in the second chamber of the Isaryn, beside the remains of someone who tried to leave…"></textarea>
+    <textarea class="disc-textarea" id="disc-context" rows="4" placeholder="e.g. Wedged behind a loose stone in the Isaryn..."></textarea>
     <div class="disc-actions">
       <button class="disc-cancel" onclick="closeDiscovered()">Cancel</button>
       <button class="disc-go" id="disc-go-btn" onclick="runDiscoveredAuto()">Find It</button>
     </div>
   </div>
 </div>
+
+<script>
+// ═══════════════════════════════════════
+// MAP ENGINE
+// ═══════════════════════════════════════
+function mkRng(seed){let s=seed>>>0;return()=>{s+=0x6D2B79F5;let t=Math.imul(s^s>>>15,1|s);t^=t+Math.imul(t^t>>>7,61|t);return((t^t>>>14)>>>0)/4294967296}}
+function hashStr(str){let h=0xdeadbeef;for(let i=0;i<str.length;i++)h=Math.imul(h^str.charCodeAt(i),2654435761);return h>>>0}
+
+let mapType='dungeon';
+let lastSeed=null;
+
+function setMapType(t,btn){mapType=t;document.querySelectorAll('.map-type-btn[data-mtype]').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+
+const scaleLabels=['Sm','Med','Lg'];
+document.getElementById('map-density').addEventListener('input',function(){document.getElementById('map-density-val').textContent=this.value});
+document.getElementById('map-scale').addEventListener('input',function(){document.getElementById('map-scale-val').textContent=scaleLabels[this.value-1]});
+
+function rerollMap(){document.getElementById('map-seed').value='';generateMap()}
+
+function generateMap(){
+  const canvas=document.getElementById('map-canvas');
+  const seedRaw=document.getElementById('map-seed').value.trim();
+  const seedVal=seedRaw?hashStr(seedRaw):(Math.random()*0xffffffff)>>>0;
+  lastSeed=seedVal;
+  if(!seedRaw)document.getElementById('map-seed').value=seedVal.toString(16).toUpperCase().padStart(8,'0');
+  const rng=mkRng(seedVal);
+  const targetRooms=parseInt(document.getElementById('map-density').value);
+  const scaleIdx=parseInt(document.getElementById('map-scale').value);
+  const CELL=scaleIdx===1?16:scaleIdx===2?20:26;
+
+  // Canvas dimensions
+  const canvasW=Math.min(window.innerWidth-32,700);
+  const cols=Math.floor(canvasW/CELL);
+  const rows=Math.floor(cols*0.68);
+  const canvasH=rows*CELL;
+  canvas.width=canvasW;canvas.height=canvasH;
+  const ctx=canvas.getContext('2d');
+
+  // Palettes
+  const P={
+    dungeon:{paper:'#f0ebe0',floor:'#e6e0d0',corridor:'#ddd8c5',wall:'#18120c',hatch:'rgba(0,0,0,0.07)',shadow:'rgba(0,0,0,0.10)'},
+    cavern: {paper:'#ece8dc',floor:'#d8d2be',corridor:'#cdc7b0',wall:'#161210',hatch:'rgba(0,0,0,0.06)',shadow:'rgba(0,0,0,0.09)'},
+    catacomb:{paper:'#edeadf',floor:'#e2dccb',corridor:'#d8d2bf',wall:'#1a1410',hatch:'rgba(0,0,0,0.06)',shadow:'rgba(0,0,0,0.08)'},
+  };
+  const pal=P[mapType];
+  const WW=Math.max(2,Math.round(CELL*0.18)); // wall thickness
+
+  // Background
+  ctx.fillStyle=pal.paper;ctx.fillRect(0,0,canvasW,canvasH);
+
+  // Generate rooms
+  const sr={dungeon:{minW:3,maxW:8,minH:3,maxH:6},cavern:{minW:4,maxW:11,minH:3,maxH:8},catacomb:{minW:2,maxW:5,minH:2,maxH:4}}[mapType];
+  const rooms=[];let att=0;
+  while(rooms.length<targetRooms&&att<2000){
+    att++;
+    const w=Math.floor(rng()*(sr.maxW-sr.minW+1))+sr.minW;
+    const h=Math.floor(rng()*(sr.maxH-sr.minH+1))+sr.minH;
+    const x=Math.floor(rng()*(cols-w-3))+2;
+    const y=Math.floor(rng()*(rows-h-3))+2;
+    const c={x,y,w,h,id:rooms.length};
+    if(!rooms.some(b=>x<b.x+b.w+1&&x+w+1>b.x&&y<b.y+b.h+1&&y+h+1>b.y))rooms.push(c);
+  }
+
+  // Build corridors (MST)
+  const corridors=[];
+  if(rooms.length>1){
+    const connected=new Set([0]);const uncon=new Set(rooms.slice(1).map((_,i)=>i+1));
+    while(uncon.size>0){
+      let bd=Infinity,ba=-1,bb=-1;
+      for(const ci of connected)for(const ui of uncon){
+        const a=rooms[ci],b=rooms[ui];
+        const d=Math.abs(a.x+a.w/2-(b.x+b.w/2))+Math.abs(a.y+a.h/2-(b.y+b.h/2));
+        if(d<bd){bd=d;ba=ci;bb=ui}
+      }
+      if(ba<0)break;
+      const a=rooms[ba],b=rooms[bb];
+      const ax=Math.floor(a.x+a.w/2),ay=Math.floor(a.y+a.h/2);
+      const bx=Math.floor(b.x+b.w/2),by=Math.floor(b.y+b.h/2);
+      corridors.push({x1:ax,y1:ay,x2:bx,y2:by});
+      connected.add(bb);uncon.delete(bb);
+    }
+  }
+
+  // Grid: 0=empty 1=room 2=corridor
+  const grid=Array.from({length:rows},()=>new Uint8Array(cols));
+  rooms.forEach(r=>{for(let dy=0;dy<r.h;dy++)for(let dx=0;dx<r.w;dx++)grid[r.y+dy][r.x+dx]=1});
+  corridors.forEach(c=>{
+    // L-shaped: horizontal first, then vertical
+    const xa=Math.min(c.x1,c.x2),xb=Math.max(c.x1,c.x2);
+    for(let cx=xa;cx<=xb;cx++)if(c.y1>=0&&c.y1<rows&&cx>=0&&cx<cols&&grid[c.y1][cx]===0)grid[c.y1][cx]=2;
+    const ya=Math.min(c.y1,c.y2),yb=Math.max(c.y1,c.y2);
+    for(let cy=ya;cy<=yb;cy++)if(cy>=0&&cy<rows&&c.x2>=0&&c.x2<cols&&grid[cy][c.x2]===0)grid[cy][c.x2]=2;
+  });
+
+  // Draw floors
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    if(!grid[r][c])continue;
+    ctx.fillStyle=grid[r][c]===1?pal.floor:pal.corridor;
+    ctx.fillRect(c*CELL,r*CELL,CELL,CELL);
+  }
+
+  // Hatching
+  ctx.save();
+  if(mapType==='dungeon'||mapType==='catacomb'){
+    const step=mapType==='catacomb'?7:6;
+    rooms.forEach(r=>{
+      ctx.save();ctx.beginPath();ctx.rect(r.x*CELL+WW,r.y*CELL+WW,r.w*CELL-WW*2,r.h*CELL-WW*2);ctx.clip();
+      ctx.strokeStyle=pal.hatch;ctx.lineWidth=0.5;
+      for(let i=-(r.h*CELL);i<r.w*CELL+(r.h*CELL);i+=step){
+        ctx.beginPath();ctx.moveTo(r.x*CELL+i,r.y*CELL);ctx.lineTo(r.x*CELL+i+r.h*CELL,r.y*CELL+r.h*CELL);ctx.stroke();
+      }
+      ctx.restore();
+    });
+  } else {
+    // Cavern stipple
+    rooms.forEach(r=>{
+      for(let dy=0;dy<r.h;dy++)for(let dx=0;dx<r.w;dx++){
+        const n=Math.floor(rng()*5);
+        for(let i=0;i<n;i++){
+          ctx.fillStyle='rgba(0,0,0,0.08)';ctx.beginPath();
+          ctx.arc(r.x*CELL+dx*CELL+rng()*CELL,r.y*CELL+dy*CELL+rng()*CELL,0.8,0,Math.PI*2);ctx.fill();
+        }
+      }
+    });
+  }
+  ctx.restore();
+
+  // Wall thickness pass — fill wall-adjacent edges
+  ctx.save();ctx.fillStyle=pal.wall;
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    if(!grid[r][c])continue;
+    const px=c*CELL,py=r*CELL;
+    if(r===0||!grid[r-1][c])ctx.fillRect(px,py,CELL,WW);
+    if(r===rows-1||!grid[r+1][c])ctx.fillRect(px,py+CELL-WW,CELL,WW);
+    if(c===0||!grid[r][c-1])ctx.fillRect(px,py,WW,CELL);
+    if(c===cols-1||!grid[r][c+1])ctx.fillRect(px+CELL-WW,py,WW,CELL);
+  }
+  ctx.restore();
+
+  // Cavern jagged edges over wall fill
+  if(mapType==='cavern'){
+    ctx.save();ctx.strokeStyle=pal.wall;ctx.lineWidth=1.4;
+    rooms.forEach(r=>{
+      function jagged(x1,y1,x2,y2,axis){
+        ctx.beginPath();ctx.moveTo(x1,y1);
+        const steps=Math.round(Math.abs(axis==='h'?x2-x1:y2-y1)/5);
+        for(let i=0;i<=steps;i++){
+          const t=i/steps;const j=(rng()-0.5)*6;
+          if(axis==='h')ctx.lineTo(x1+(x2-x1)*t,y1+j);else ctx.lineTo(x1+j,y1+(y2-y1)*t);
+        }
+        ctx.lineTo(x2,y2);ctx.stroke();
+      }
+      const x=r.x*CELL,y=r.y*CELL,w=r.w*CELL,h=r.h*CELL;
+      jagged(x,y,x+w,y,'h');jagged(x,y+h,x+w,y+h,'h');jagged(x,y,x,y+h,'v');jagged(x+w,y,x+w,y+h,'v');
+    });
+    ctx.restore();
+  }
+
+  // Door glyphs where corridor meets room
+  ctx.save();
+  ctx.fillStyle=pal.paper;ctx.strokeStyle=pal.wall;ctx.lineWidth=1.2;
+  corridors.forEach(c=>{
+    // scan horizontal segment at y1
+    const xa=Math.min(c.x1,c.x2),xb=Math.max(c.x1,c.x2);
+    for(let cx=xa;cx<=xb;cx++){
+      if(c.y1<0||c.y1>=rows||cx<0||cx>=cols)continue;
+      const here=grid[c.y1][cx];
+      const left=cx>0?grid[c.y1][cx-1]:0;
+      if(here===2&&left===1){drawDoor(ctx,cx*CELL,c.y1*CELL,CELL,true);break}
+      if(here===1&&left===2){drawDoor(ctx,(cx-1)*CELL,c.y1*CELL,CELL,true);break}
+    }
+    // scan vertical segment at x2
+    const ya=Math.min(c.y1,c.y2),yb=Math.max(c.y1,c.y2);
+    for(let cy=ya;cy<=yb;cy++){
+      if(cy<0||cy>=rows||c.x2<0||c.x2>=cols)continue;
+      const here=grid[cy][c.x2];
+      const above=cy>0?grid[cy-1][c.x2]:0;
+      if(here===2&&above===1){drawDoor(ctx,c.x2*CELL,cy*CELL,CELL,false);break}
+      if(here===1&&above===2){drawDoor(ctx,c.x2*CELL,(cy-1)*CELL,CELL,false);break}
+    }
+  });
+  ctx.restore();
+
+  // Catacomb: cross markers
+  if(mapType==='catacomb'){
+    ctx.save();ctx.strokeStyle=pal.wall;ctx.lineWidth=0.9;
+    rooms.forEach(r=>{
+      if(r.w>2&&r.h>2){
+        const cx=(r.x+r.w/2)*CELL,cy=(r.y+r.h/2)*CELL,s=CELL*0.28;
+        ctx.beginPath();ctx.moveTo(cx-s,cy);ctx.lineTo(cx+s,cy);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(cx,cy-s);ctx.lineTo(cx,cy+s);ctx.stroke();
+      }
+    });
+    ctx.restore();
+  }
+
+  // Room numbers
+  const fs=Math.max(8,Math.round(CELL*0.48));
+  ctx.save();ctx.fillStyle=pal.wall;ctx.font=`bold ${fs}px serif`;ctx.textBaseline='middle';ctx.textAlign='center';
+  rooms.forEach((r,i)=>{ctx.fillText(String(i+1),(r.x+r.w/2)*CELL,(r.y+r.h/2)*CELL)});
+  ctx.restore();
+
+  // Border
+  ctx.save();ctx.strokeStyle=pal.wall;ctx.lineWidth=1.5;ctx.strokeRect(1,1,canvasW-2,canvasH-2);ctx.restore();
+}
+
+function drawDoor(ctx,px,py,CELL,horiz){
+  const m=Math.round(CELL*0.15),s=Math.round(CELL*0.12);
+  if(horiz){
+    // vertical door bar across horizontal corridor
+    ctx.fillRect(px+CELL/2-s,py+m,s*2,CELL-m*2);
+    ctx.strokeRect(px+CELL/2-s,py+m,s*2,CELL-m*2);
+  }else{
+    // horizontal door bar across vertical corridor
+    ctx.fillRect(px+m,py+CELL/2-s,CELL-m*2,s*2);
+    ctx.strokeRect(px+m,py+CELL/2-s,CELL-m*2,s*2);
+  }
+}
+
+function downloadMap(){
+  const canvas=document.getElementById('map-canvas');
+  if(!canvas.width)return;
+  const a=document.createElement('a');
+  a.download='map_'+mapType+'_'+(lastSeed||0).toString(16).toUpperCase().padStart(8,'0')+'.png';
+  a.href=canvas.toDataURL('image/png');a.click();
+}
+
+// ═══════════════════════════════════════
+// EXISTING TOOL CODE
+// ═══════════════════════════════════════
+const WORLD_CANON=`You are generating in-universe artifacts for a D&D campaign called "Return of Mavashik," set in a world called Aldoris during its Dark Ages.\n\nCANONICAL WORLD FACTS:\n- The Zanaryth-Vora is a cosmic law — not an agent or entity.\n- Mavashik is Sylaenor — his hubris: believing he serves the Zanaryth-Vora.\n- The Heartwood Tree of Elarien sacrificed itself — the city died anyway.\n- Elarien: ruined city built in the Heartwood's crater. Named "ancient peace" before its fall.\n- The Thal'vorn: six fungi in the catacombs.\n- The Isaryn: six chambers feeding into a central Darkness Room. A curriculum, not a tomb.\n- The Silver Flame (Miranor): guardians of the living world.\n- Eldraxis: the void, pre-existence.\n- Uldar: language of Eldraxis. Present tense only. Everything already complete.\n- The Sylvanox: corrupted elves.\n- The Vaellyth (Life Stones): six exist. Cannot be destroyed.\n\nWRITING STYLE:\n- Archaic, poetic, weighted. Grief underneath.\n- Convey truth through metaphor. Never explain what can be felt.\n- Fragments acceptable. Compression over explanation.\n- No modern tone. Ever.`;
+const CLASSES={archival:{label:"Andorian Archival Record",voice:"High Andorian — formal, ordered, grief-controlled"},testimony:{label:"Silver Flame Testimony",voice:"War-Witness — blunt, haunted, survivor's cadence"},monastic:{label:"Monastic Manuscript",voice:"Late Monastic — reverent, damaged, uncertain of its source"},doctrinal:{label:"Vey'kar Doctrinal Fragment",voice:"Corrupted — seductive, reframing horror as initiation"},field:{label:"Field Report",voice:"Expedition Practical — terse, observational, unsettled at the edges"},inscription:{label:"Ritual Inscription",voice:"Threshold — imperative, sparse, measuring"},gloss:{label:"Scholar's Gloss",voice:"Analytic — precise, cautious, knows the limits of evidence"},oral:{label:"Oral Legend",voice:"Mythic-Fragmentary — old firelight, ground keeps its counsel"},uldar:{label:"Uldar Transmission",voice:"Eldraxian — present tense only, no questions, states already complete"}};
+const SUBJECTS=["The roots beneath the dead Heartwood stump of Elarien","The fall of Elarien — why the tree's sacrifice failed to save the city","The Darkness Room — the central chamber of the Isaryn","Vor'ethal and the word it repeats at the edge of perception","The first concealment of a Vaellyth (Life Stone)","Ssolveth and the conquered surface city","Why the Vorazan ended the Andorians instead of Mavashik","The Zanaryth-Vora and what no living mind has understood about it","The Sylvanox — what they were before they turned","Mavashik's belief that he serves the Zanaryth-Vora","The last Andorian archivist and what they sealed in the Isaryn"];
+const TRUTH_RELATIONS=["Witnessed truth","Institutional truth","Devotional truth","Corrupted truth","Mythic truth","False surface / true undertow"];
+const DISTORTIONS=["translation loss","political self-censorship","devotional reinterpretation","trauma distortion","taboo omission","hostile recopying","physical damage","memory failure","mythic embellishment"];
+const PRESERVATION=["pristine","lightly damaged","fragmentary","heavily fragmentary","translated and annotated","quoted only in later source","disputed authenticity"];
+const pick=arr=>arr[Math.floor(Math.random()*arr.length)];
+let currentClass='monastic';let generatedOutput='';
+function populateSelect(id,options,selected){const el=document.getElementById(id);el.innerHTML='';options.forEach(o=>{const opt=document.createElement('option');opt.value=o;opt.textContent=o;if(o===selected)opt.selected=true;el.appendChild(opt)})}
+function initClassButtons(){const row=document.getElementById('class-row');row.innerHTML='';Object.keys(CLASSES).forEach(k=>{const btn=document.createElement('button');btn.className='class-btn'+(k===currentClass?' active':'');btn.textContent=k;btn.onclick=()=>{currentClass=k;initClassButtons();document.getElementById('voice-hint').textContent=CLASSES[k].voice};row.appendChild(btn)})}
+function init(){initClassButtons();document.getElementById('voice-hint').textContent=CLASSES[currentClass].voice;populateSelect('subject-select',SUBJECTS,SUBJECTS[0]);populateSelect('truthRelation',TRUTH_RELATIONS,'Devotional truth');populateSelect('preservation',PRESERVATION,'fragmentary');populateSelect('distortion1',DISTORTIONS,'devotional reinterpretation');populateSelect('distortion2',DISTORTIONS,'translation loss');document.getElementById('truthActual').value="The roots retained partial consciousness after the Heartwood sacrificed itself. They are not dormant. They are waiting.";document.getElementById('authorBelief').value="The tree is wholly dead. What the roots do is residual and fading.";document.getElementById('truthWithheld').value="The monks continue to use the site despite the roots responding to presence.";document.getElementById('authorError').value="Assumes benevolence because the tree was benevolent.";document.getElementById('hiddenImplication').value="The roots are not fading. They are learning.";document.getElementById('length').addEventListener('input',e=>{document.getElementById('length-display').textContent=e.target.value+' words'})}
+function switchTab(tab){['builder','item-builder','item-result','artifact-view','map-tab'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'});if(tab==='builder')document.getElementById('builder').style.display='block';else if(tab==='item')document.getElementById('item-builder').style.display='block';else if(tab==='item-result')document.getElementById('item-result').style.display='block';else if(tab==='artifact')document.getElementById('artifact-view').style.display='block';else if(tab==='map'){document.getElementById('map-tab').style.display='block';if(!lastSeed)generateMap()}document.getElementById('tab-builder').classList.toggle('active',tab==='builder');document.getElementById('tab-item').classList.toggle('active',tab==='item'||tab==='item-result');document.getElementById('tab-artifact').classList.toggle('active',tab==='artifact');document.getElementById('tab-map').classList.toggle('active',tab==='map')}
+async function generate(){const truthActual=document.getElementById('truthActual').value.trim();if(!truthActual)return;const subject=document.getElementById('subject-select').value;const authorBelief=document.getElementById('authorBelief').value;const truthWithheld=document.getElementById('truthWithheld').value;const authorError=document.getElementById('authorError').value;const hiddenImplication=document.getElementById('hiddenImplication').value;const truthRelation=document.getElementById('truthRelation').value;const distortion1=document.getElementById('distortion1').value;const distortion2=document.getElementById('distortion2').value;const preservation=document.getElementById('preservation').value;const length=document.getElementById('length').value;switchTab('artifact');document.getElementById('loading-wrap').style.display='block';document.getElementById('artifact-content').style.display='none';document.getElementById('empty-wrap').style.display='none';document.getElementById('loading-class').textContent=CLASSES[currentClass].label;document.getElementById('tab-artifact').textContent='Artifact ...';const system=`${WORLD_CANON}\n\nGenerate a single in-universe artifact.\nClass: ${CLASSES[currentClass].label}\nVoice: ${CLASSES[currentClass].voice}\nSubject: ${subject}\nWhat actually happened: ${truthActual}\nWhat the author believes: ${authorBelief}\nWhat the author withholds: ${truthWithheld}\nThe author's blind spot: ${authorError}\nTruth relation: ${truthRelation}\nDistortions: ${distortion1}, ${distortion2}\nPreservation: ${preservation}\nHidden implication (never state directly): ${hiddenImplication}\nLength: ~${length} words\n\nRULES: Write ONLY the artifact. No preamble. Never state the hidden implication directly. If fragmentary, use [line lost] or [illegible]. End with — [Author name]. No modern vocabulary.`;try{const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":getKey(),"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system,messages:[{role:"user",content:"Generate the artifact."}]})});const data=await res.json();const text=data.content?.find(b=>b.type==="text")?.text||"";if(!text)throw new Error("No content");generatedOutput=text;renderArtifact(text,preservation,truthRelation,hiddenImplication)}catch(e){document.getElementById('loading-wrap').style.display='none';document.getElementById('empty-wrap').style.display='block';document.getElementById('error-msg').textContent='Generation failed.';document.getElementById('error-msg').style.display='block';switchTab('builder')}finally{document.getElementById('tab-artifact').textContent='Artifact'}}
+function renderArtifact(text,preservation,truthRelation,hiddenImplication){document.getElementById('loading-wrap').style.display='none';const wrap=document.getElementById('artifact-content');wrap.innerHTML='';wrap.className='fade-up';const meta=document.createElement('div');meta.className='art-meta';const tag=document.createElement('span');tag.className='art-tag';tag.textContent=CLASSES[currentClass].label;const state=document.createElement('span');state.className='art-state';state.textContent=preservation+' · '+truthRelation;meta.appendChild(tag);meta.appendChild(state);wrap.appendChild(meta);const body=document.createElement('div');body.className='art-body';text.split('\n').forEach(line=>{if(!line.trim()){const sp=document.createElement('div');sp.className='art-spacer';body.appendChild(sp);return}const p=document.createElement('p');p.className=(line.includes('[line lost]')||line.includes('[illegible]'))?'art-lost':'art-line';p.textContent=line;body.appendChild(p)});wrap.appendChild(body);if(hiddenImplication){const note=document.createElement('div');note.className='dm-note';const lbl=document.createElement('div');lbl.className='dm-note-lbl';lbl.textContent='DM Note';const txt=document.createElement('p');txt.className='dm-note-text';txt.textContent=hiddenImplication;note.appendChild(lbl);note.appendChild(txt);wrap.appendChild(note)}const actions=document.createElement('div');actions.className='art-actions';const editBtn=document.createElement('button');editBtn.className='act-btn muted';editBtn.textContent='← Edit';editBtn.onclick=()=>switchTab('builder');const regenBtn=document.createElement('button');regenBtn.className='act-btn muted';regenBtn.textContent='Regenerate';regenBtn.onclick=()=>generate();const copyBtn=document.createElement('button');copyBtn.className='act-btn accent';copyBtn.textContent='Copy';copyBtn.onclick=async()=>{try{await navigator.clipboard.writeText(generatedOutput)}catch{}copyBtn.textContent='Copied';setTimeout(()=>copyBtn.textContent='Copy',1600)};actions.appendChild(editBtn);actions.appendChild(regenBtn);actions.appendChild(copyBtn);wrap.appendChild(actions);wrap.style.display='block'}
+async function callAPI(system,userMsg){const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":getKey(),"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,system,messages:[{role:"user",content:userMsg}]})});const data=await res.json();return data.content?.find(b=>b.type==="text")?.text||""}
+function setFillingState(on){document.getElementById('filling-indicator').style.display=on?'inline':'none'}
+function applyFilledFields(p){if(p.subject){const sel=document.getElementById('subject-select');const opt=document.createElement('option');opt.value=p.subject;opt.textContent=p.subject;sel.insertBefore(opt,sel.firstChild);sel.value=p.subject}if(p.truthActual)document.getElementById('truthActual').value=p.truthActual;if(p.authorBelief)document.getElementById('authorBelief').value=p.authorBelief;if(p.truthWithheld)document.getElementById('truthWithheld').value=p.truthWithheld;if(p.authorError)document.getElementById('authorError').value=p.authorError;if(p.hiddenImplication)document.getElementById('hiddenImplication').value=p.hiddenImplication}
+async function randomizeFill(){currentClass=pick(Object.keys(CLASSES));initClassButtons();document.getElementById('voice-hint').textContent=CLASSES[currentClass].voice;document.getElementById('subject-select').value=pick(SUBJECTS);document.getElementById('truthRelation').value=pick(TRUTH_RELATIONS);document.getElementById('preservation').value=pick(PRESERVATION);document.getElementById('distortion1').value=pick(DISTORTIONS);document.getElementById('distortion2').value=pick(DISTORTIONS);const len=pick([180,240,300,380]);document.getElementById('length').value=len;document.getElementById('length-display').textContent=len+' words';setFillingState(true);const subject=document.getElementById('subject-select').value;const system=`${WORLD_CANON}\n\nFill truth layer fields.\nDocument class: ${CLASSES[currentClass].label}\nSubject: ${subject}\nReturn ONLY valid JSON:\n{"truthActual":"...","authorBelief":"...","truthWithheld":"...","authorError":"...","hiddenImplication":"..."}\nEach field 1-3 sentences.`;try{const raw=await callAPI(system,"Fill the fields.");const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());applyFilledFields(parsed)}catch(e){console.error(e)}setFillingState(false)}
+async function unboundFill(){currentClass=pick(Object.keys(CLASSES));initClassButtons();document.getElementById('voice-hint').textContent=CLASSES[currentClass].voice;document.getElementById('truthRelation').value=pick(TRUTH_RELATIONS);document.getElementById('preservation').value=pick(PRESERVATION);document.getElementById('distortion1').value=pick(DISTORTIONS);document.getElementById('distortion2').value=pick(DISTORTIONS);const len=pick([180,240,300,380]);document.getElementById('length').value=len;document.getElementById('length-display').textContent=len+' words';setFillingState(true);const system=`Invent a completely original fictional world. Not Tolkien, not D&D. Ancient, specific, strange.\nDocument class: ${CLASSES[currentClass].label}\nReturn ONLY valid JSON:\n{"subject":"...","truthActual":"...","authorBelief":"...","truthWithheld":"...","authorError":"...","hiddenImplication":"..."}\nEach field 1-3 sentences. Archaic weight.`;try{const raw=await callAPI(system,"Generate unbound fields.");const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());applyFilledFields(parsed)}catch(e){console.error(e)}setFillingState(false)}
+function openDiscovered(){document.getElementById('discovered-modal').style.display='block';setTimeout(()=>document.getElementById('disc-context').focus(),100)}
+function closeDiscovered(){document.getElementById('discovered-modal').style.display='none'}
+let discType='document';
+function setDiscType(t){discType=t;const d=document.getElementById('disc-type-doc'),it=document.getElementById('disc-type-item');if(t==='document'){d.style.background='#3c1a08';d.style.color='#fde68a';d.style.outline='1px solid #92400e';it.style.background='#141210';it.style.color='#57534e';it.style.outline='1px solid #1c1917'}else{it.style.background='#0f1a27';it.style.color='#7ab3d4';it.style.outline='1px solid #2a5a7a';d.style.background='#141210';d.style.color='#57534e';d.style.outline='1px solid #1c1917'}}
+async function runDiscoveredAuto(){if(discType==='item')await runDiscoveredItem();else await runDiscovered()}
+async function runDiscovered(){const context=document.getElementById('disc-context').value.trim();if(!context)return;const btn=document.getElementById('disc-go-btn');btn.disabled=true;btn.textContent='Reading...';const classKeys=Object.keys(CLASSES);const classOptions=classKeys.map(k=>`${k}: ${CLASSES[k].label} (${CLASSES[k].voice})`).join('\n');const system=`${WORLD_CANON}\n\nDecide what document was found and fill fields.\nAvailable classes:\n${classOptions}\nReturn ONLY valid JSON:\n{"suggestedClass":"...","subject":"...","truthActual":"...","authorBelief":"...","truthWithheld":"...","authorError":"...","hiddenImplication":"..."}\nLet discovery location deeply shape everything.`;try{const raw=await callAPI(system,`Found here: ${context}`);const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());if(parsed.suggestedClass&&CLASSES[parsed.suggestedClass]){currentClass=parsed.suggestedClass;initClassButtons();document.getElementById('voice-hint').textContent=CLASSES[currentClass].voice}applyFilledFields(parsed);closeDiscovered();document.getElementById('disc-context').value=''}catch(e){console.error(e)}btn.disabled=false;btn.textContent='Find It'}
+const ITEM_TYPES=['weapon','armor','trinket','vessel','token','inscription','reagent','relic','key','fragment','mundane'];
+let currentItemType='trinket';
+function initItemBuilder(){const row=document.getElementById('item-type-row');if(!row)return;row.innerHTML='';ITEM_TYPES.forEach(t=>{const btn=document.createElement('button');const isMundane=t==='mundane';const isActive=t===currentItemType;btn.className='item-type-btn'+(isActive?(isMundane?' mundane-active':' active'):'');btn.textContent=t;btn.onclick=()=>{currentItemType=t;initItemBuilder()};row.appendChild(btn)})}
+const ITEM_MATERIALS=['bone','obsidian','pale iron','tarnished silver','black glass','petrified wood','salt-white stone','corroded bronze','woven shadow-fiber','dried root','cold copper','cracked ivory'];
+const ITEM_CONDITIONS=['pristine but wrong','worn smooth by too many hands','partially melted','cracked and repaired badly','carved over with something newer','still warm','heavier than it should be'];
+const ITEM_ORIGINS=['Andorian','Silver Flame','pre-Vorazan','Sylvanox','monastic','unknown maker','made in the Isaryn','carried out of Elarien'];
+const ITEM_LASTHELD=['a monk who did not survive','a soldier who buried it intentionally','a child','someone searching for something else','an archivist'];
+const ITEM_PURPOSES=['concealment','communication','measurement','binding','offering','protection that failed','marking','memory','destruction of something specific'];
+async function generateItem(){const truth=document.getElementById('item-truth').value.trim();if(!truth)return;const surface=document.getElementById('item-surface').value;const history=document.getElementById('item-history').value;const hidden=document.getElementById('item-hidden').value;const dmNote=document.getElementById('item-dm-note').value;const isMundane=currentItemType==='mundane';const material=pick(isMundane?['wood','iron','leather','cloth','clay','tin','copper','glass']:ITEM_MATERIALS);const condition=pick(isMundane?['old but functional','repaired more than once','well-used','recently broken']:ITEM_CONDITIONS);const origin=pick(ITEM_ORIGINS);const lastHeld=pick(isMundane?['a farmer','a soldier','a traveler','a child','a merchant']:ITEM_LASTHELD);const purpose=pick(isMundane?['eating or drinking','carrying something','keeping something dry','cutting or fastening']:ITEM_PURPOSES);const mundaneInstructions=isMundane?`MUNDANE RULES: ordinary object, no magic. Plain name. Describe like holding it. FORBIDDEN: cosmic language, mystical properties.`:`GROUNDED RULES: weight, wear, history. Avoid purple language. FORBIDDEN: destiny language, prophecy language.`;switchTab('item-result');document.getElementById('item-loading-wrap').style.display='block';document.getElementById('item-content').style.display='none';document.getElementById('item-empty-wrap').style.display='none';document.getElementById('tab-item').textContent='Item ...';const system=`${WORLD_CANON}\n\nGenerate a physical item. Type: ${currentItemType}\nTruth: ${truth}\nSurface: ${surface}\nHistory: ${history}\nHidden: ${hidden}\nMaterial: ${material}, Condition: ${condition}, Origin: ${origin}, Last held: ${lastHeld}, Purpose: ${purpose}\n${mundaneInstructions}\nReturn ONLY valid JSON:\n{"name":"...","type":"...","appearance":"...","properties":[{"key":"...","value":"..."}],"lore":"...","dm_note":"..."}\n3-5 properties.`;try{const raw=await callAPI(system,"Generate the item.");const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());renderItem(parsed,dmNote||parsed.dm_note)}catch(e){console.error(e);document.getElementById('item-loading-wrap').style.display='none';document.getElementById('item-empty-wrap').style.display='block';switchTab('item')}finally{document.getElementById('tab-item').textContent='Item'}}
+function renderItem(data,dmNote){document.getElementById('item-loading-wrap').style.display='none';const wrap=document.getElementById('item-content');wrap.innerHTML='';wrap.className='fade-up';const block=document.createElement('div');block.className='stat-block';const header=document.createElement('div');header.className='stat-block-header';header.innerHTML=`<div class="stat-name">${data.name||'Unnamed'}</div><div class="stat-type">${data.type||currentItemType}</div>`;block.appendChild(header);const divA=document.createElement('div');divA.className='stat-divider';block.appendChild(divA);const secA=document.createElement('div');secA.className='stat-section';secA.innerHTML=`<div class="stat-row"><span class="stat-key">Appearance</span><span class="stat-val">${data.appearance||''}</span></div>`;block.appendChild(secA);if(data.properties&&data.properties.length){const divP=document.createElement('div');divP.className='stat-divider';block.appendChild(divP);const secP=document.createElement('div');secP.className='stat-section';data.properties.forEach(p=>{const row=document.createElement('div');row.className='stat-row';row.innerHTML=`<span class="stat-key">${p.key}</span><span class="stat-val">${p.value}</span>`;secP.appendChild(row)});block.appendChild(secP)}if(data.lore){const lore=document.createElement('div');lore.className='stat-lore';lore.innerHTML=`<div class="stat-lore-label">Lore</div><div class="stat-lore-text">${data.lore}</div>`;block.appendChild(lore)}if(dmNote){const dm=document.createElement('div');dm.className='stat-dm';dm.innerHTML=`<div class="stat-dm-label">DM Note</div><div class="stat-dm-text">${dmNote}</div>`;block.appendChild(dm)}wrap.appendChild(block);const actions=document.createElement('div');actions.className='art-actions';const editBtn=document.createElement('button');editBtn.className='act-btn muted';editBtn.textContent='← Edit';editBtn.onclick=()=>switchTab('item');const regenBtn=document.createElement('button');regenBtn.className='act-btn muted';regenBtn.textContent='Reforge';regenBtn.onclick=generateItem;const copyBtn=document.createElement('button');copyBtn.className='act-btn accent';copyBtn.textContent='Copy';copyBtn.onclick=async()=>{const lines=[`${data.name} (${data.type})`,'',data.appearance,''];(data.properties||[]).forEach(p=>lines.push(`${p.key}: ${p.value}`));if(data.lore){lines.push('');lines.push(data.lore)}if(dmNote){lines.push('');lines.push('[DM] '+dmNote)}try{await navigator.clipboard.writeText(lines.join('\n'))}catch{}copyBtn.textContent='Copied';setTimeout(()=>copyBtn.textContent='Copy',1600)};actions.appendChild(editBtn);actions.appendChild(regenBtn);actions.appendChild(copyBtn);wrap.appendChild(actions);wrap.style.display='block'}
+async function itemRandomFill(){currentItemType=pick(ITEM_TYPES);initItemBuilder();document.getElementById('item-filling-indicator').style.display='inline';const system=`${WORLD_CANON}\n\nFill item builder fields. Type: ${currentItemType}.\nReturn ONLY valid JSON:\n{"truth":"...","surface":"...","history":"...","hidden":"...","dmNote":"..."}\nEach field 1-2 sentences.`;try{const raw=await callAPI(system,"Fill item fields.");const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());if(parsed.truth)document.getElementById('item-truth').value=parsed.truth;if(parsed.surface)document.getElementById('item-surface').value=parsed.surface;if(parsed.history)document.getElementById('item-history').value=parsed.history;if(parsed.hidden)document.getElementById('item-hidden').value=parsed.hidden;if(parsed.dmNote)document.getElementById('item-dm-note').value=parsed.dmNote}catch(e){console.error(e)}document.getElementById('item-filling-indicator').style.display='none'}
+function openDiscoveredItem(){discType='item';setDiscType('item');openDiscovered()}
+async function runDiscoveredItem(){const context=document.getElementById('disc-context').value.trim();if(!context)return;const btn=document.getElementById('disc-go-btn');btn.disabled=true;btn.textContent='Reading...';const system=`${WORLD_CANON}\n\nAn item was discovered. Based on location, decide type and fill fields.\nAvailable types: ${ITEM_TYPES.join(', ')}\nReturn ONLY valid JSON:\n{"itemType":"...","truth":"...","surface":"...","history":"...","hidden":"...","dmNote":"..."}\nLet discovery location deeply shape everything.`;try{const raw=await callAPI(system,`Found here: ${context}`);const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());if(parsed.itemType&&ITEM_TYPES.includes(parsed.itemType)){currentItemType=parsed.itemType;initItemBuilder()}if(parsed.truth)document.getElementById('item-truth').value=parsed.truth;if(parsed.surface)document.getElementById('item-surface').value=parsed.surface;if(parsed.history)document.getElementById('item-history').value=parsed.history;if(parsed.hidden)document.getElementById('item-hidden').value=parsed.hidden;if(parsed.dmNote)document.getElementById('item-dm-note').value=parsed.dmNote;closeDiscovered();document.getElementById('disc-context').value='';switchTab('item')}catch(e){console.error(e)}btn.disabled=false;btn.textContent='Find It'}
+function getKey(){return localStorage.getItem('lf_api_key')||''}
+function saveKey(){const val=document.getElementById('api-key-input').value.trim();if(!val.startsWith('sk-ant-')){document.getElementById('key-error').style.display='block';return}localStorage.setItem('lf_api_key',val);document.getElementById('key-setup').style.display='none';document.getElementById('builder').style.display='block';init();initItemBuilder()}
+function checkKey(){if(getKey()){document.getElementById('key-setup').style.display='none';document.getElementById('builder').style.display='block';init();initItemBuilder()}}
+checkKey();
+</script>
+
 </body>
 </html>
