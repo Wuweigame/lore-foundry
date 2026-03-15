@@ -217,7 +217,7 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
   <div class="key-setup-title">API Key Required</div>
   <div class="key-setup-desc">This tool calls the Anthropic API to generate artifacts. Paste your API key below — it will be saved in your browser and never sent anywhere except directly to Anthropic.</div>
   <label class="lbl">Your Anthropic API Key</label>
-  <input class="key-input" id="api-key-input" type="password" placeholder="sk-ant-api03-..." />
+  <input class="key-input" id="api-key-input" type="text" placeholder="sk-ant-api03-..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
   <div class="key-error" id="key-error">Key doesn't look right — should start with sk-ant-</div>
   <button class="key-btn" onclick="saveKey()">Enter the Foundry</button>
   <div class="key-note">Get a key at console.anthropic.com. Your key is stored only in this browser's local storage and is never embedded in any file.</div>
