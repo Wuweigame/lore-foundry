@@ -602,10 +602,7 @@ function applyFilledFields(parsed) {
 }
 
 async function randomizeFill() {
-  // First randomize the dropdowns
-  currentClass = pick(Object.keys(CLASSES));
-  initClassButtons();
-  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
+  // Keep the current class — just randomize settings and fill fields
   document.getElementById('subject-select').value = pick(SUBJECTS);
   document.getElementById('truthRelation').value = pick(TRUTH_RELATIONS);
   document.getElementById('preservation').value = pick(PRESERVATION);
@@ -645,10 +642,7 @@ Keep each field to 1-3 sentences. Stay within Aldoris canon. Make the hidden imp
 }
 
 async function unboundFill() {
-  // Randomize dropdowns
-  currentClass = pick(Object.keys(CLASSES));
-  initClassButtons();
-  document.getElementById('voice-hint').textContent = CLASSES[currentClass].voice;
+  // Keep the current class — just randomize settings and fill with original content
   document.getElementById('truthRelation').value = pick(TRUTH_RELATIONS);
   document.getElementById('preservation').value = pick(PRESERVATION);
   document.getElementById('distortion1').value = pick(DISTORTIONS);
@@ -945,13 +939,12 @@ function renderItem(data, dmNote) {
 }
 
 async function itemRandomFill() {
-  currentItemType = pick(ITEM_TYPES);
-  initItemBuilder();
+  // Keep the current item type — just fill in the fields
   document.getElementById('item-filling-indicator').style.display = 'inline';
 
   const system = `${WORLD_CANON}
 
-Fill the item builder fields for a random item from the world of Aldoris. Type: ${currentItemType}.
+Fill the item builder fields for an item from the world of Aldoris. Type: ${currentItemType}.
 
 Respond ONLY with valid JSON, no preamble, no markdown fences:
 {
