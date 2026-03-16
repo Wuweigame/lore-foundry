@@ -147,6 +147,8 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 </head>
 <body>
 
+<div id="debug-panel" style="display:none;background:#1a0000;border-bottom:1px solid #f87171;padding:10px 16px;font-size:11px;color:#f87171;font-family:monospace;word-break:break-all;"></div>
+
 <div class="header">
   <div>
     <div class="header-sub">Return of Mavashik</div>
@@ -220,8 +222,7 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
     style="width:100%;background:#0a0908;border:1px solid #1c1917;color:#d6d0c4;padding:10px;border-radius:3px;font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;margin-bottom:10px;" />
   <p id="key-error" style="color:#f87171;font-size:12px;margin-bottom:8px;display:none;"></p>
   <div style="text-align:right;">
-    <input type="button" id="key-submit-btn" value="Enter the Foundry"
-      style="padding:11px 22px;background:#7c2d12;color:#fde68a;border:none;border-radius:3px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-family:'IM Fell English',serif;cursor:pointer;-webkit-appearance:none;" />
+    <button onclick="saveKey()" style="padding:11px 22px;background:#7c2d12;color:#fde68a;border:none;border-radius:3px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-family:'IM Fell English',serif;cursor:pointer;-webkit-tap-highlight-color:transparent;">Enter the Foundry</button>
   </div>
   <p style="font-size:11px;color:#3c3836;margin-top:24px;font-style:italic;line-height:1.6;">Get a key at console.anthropic.com</p>
 </div>
@@ -1047,59 +1048,18 @@ Let the discovery location deeply shape everything. Stay within Aldoris canon.`;
 
 function getKey() { return localStorage.getItem('lf_api_key') || ''; }
 
-async function saveKey() {
+function saveKey() {
   const val = document.getElementById('api-key-input').value.trim();
   const errEl = document.getElementById('key-error');
-  const btn = document.getElementById('key-submit-btn');
-
   errEl.style.display = 'none';
-
   if (!val.startsWith('sk-ant-')) {
     errEl.textContent = "Key doesn't look right — should start with sk-ant-";
     errEl.style.display = 'block';
     return;
   }
-
-  btn.value = 'Checking…';
-  btn.disabled = true;
-
-  // Test the key with a minimal API call
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": val,
-        "anthropic-version": "2023-06-01",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 10,
-        messages: [{ role: "user", content: "Hi" }]
-      })
-    });
-    const data = await res.json();
-    if (data.error) {
-      errEl.textContent = "Key rejected: " + (data.error.message || "invalid or expired");
-      errEl.style.display = 'block';
-      btn.value = 'Enter the Foundry';
-      btn.disabled = false;
-      return;
-    }
-  } catch(e) {
-    errEl.textContent = "Could not reach Anthropic — check your connection.";
-    errEl.style.display = 'block';
-    btn.value = 'Enter the Foundry';
-    btn.disabled = false;
-    return;
-  }
-
   localStorage.setItem('lf_api_key', val);
   document.getElementById('key-setup').style.display = 'none';
   document.getElementById('builder').style.display = 'block';
-  btn.value = 'Enter the Foundry';
-  btn.disabled = false;
   init();
   initItemBuilder();
 }
@@ -1110,25 +1070,25 @@ function checkKey() {
     document.getElementById('builder').style.display = 'block';
     init();
     initItemBuilder();
-  } else {
-    // Wire up key button with both click and touchend for mobile Safari
-    const btn = document.getElementById('key-submit-btn');
-    if (btn) {
-      btn.addEventListener('click', saveKey);
-      btn.addEventListener('touchend', function(e) {
-        e.preventDefault();
-        saveKey();
-      });
-    }
-    // Also allow Enter key in the input
-    const inp = document.getElementById('api-key-input');
-    if (inp) {
-      inp.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') saveKey();
-      });
-    }
   }
 }
+
+// Global error catcher
+window.onerror = function(msg, src, line, col, err) {
+  const panel = document.getElementById('debug-panel');
+  if (panel) {
+    panel.style.display = 'block';
+    panel.textContent = 'JS ERROR: ' + msg + ' (line ' + line + ')';
+  }
+  return false;
+};
+window.addEventListener('unhandledrejection', function(e) {
+  const panel = document.getElementById('debug-panel');
+  if (panel) {
+    panel.style.display = 'block';
+    panel.textContent = 'PROMISE ERROR: ' + (e.reason && e.reason.message ? e.reason.message : String(e.reason));
+  }
+});
 
 checkKey();
 </script>
