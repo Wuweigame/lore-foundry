@@ -153,6 +153,13 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 .settings-key-row { display: flex; gap: 8px; align-items: center; }
 .settings-key-display { flex: 1; background: var(–bg2); border: 1px solid var(–border); color: var(–dim); padding: 8px 10px; border-radius: 3px; font-size: 11px; font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .settings-key-btn { padding: 8px 14px; background: transparent; color: var(–muted); border: 1px solid var(–border); border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
+
+.canon-tabs { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+.canon-tab-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 10px; border-radius: 3px; cursor: pointer; border: none; background: #141210; color: var(–muted); outline: 1px solid var(–border); font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
+.canon-tab-btn.active { background: #0f1a27; color: #7ab3d4; outline-color: #2a5a7a; }
+.canon-panel { display: none; }
+.canon-panel.active { display: block; }
+.canon-char-count { font-size: 10px; color: var(–dimmer); }
 .empty-link { margin-top: 10px; background: none; border: none; color: var(–muted); cursor: pointer; font-size: 12px; text-decoration: underline; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
 .unbound-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #0f1a14; outline: 1px solid #1c3028; color: #4a7c68; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
 .unbound-btn:active { background: #162a20; }
@@ -234,16 +241,48 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 <div id="settings-view">
 
   <div class="settings-section">
-    <div class="settings-title">World Canon</div>
-    <div class="settings-desc">This is what the generator reads before creating anything. Add factions, places, NPCs, events, history — the more detail you add, the more varied and specific the output becomes.</div>
-    <textarea class="settings-textarea" id="settings-canon" rows="18" placeholder="Add your world details here..."></textarea>
-    <div class="settings-save-row">
-      <button class="settings-reset" onclick="resetCanon()">Reset to defaults</button>
-      <div style="display:flex;gap:10px;align-items:center;">
-        <span class="settings-saved" id="canon-saved">Saved</span>
-        <button class="settings-save-btn" onclick="saveCanon()">Save Canon</button>
-      </div>
-    </div>
+    <div class="settings-title" style="margin-bottom:10px;">World Canon</div>
+    <div class="settings-desc">Each section gets sent to the generator separately. Write as much or as little as you want — bullet points, paragraphs, notes to yourself. Hit Save after editing any section.</div>
+
+```
+<div class="canon-tabs" id="canon-tabs">
+  <button class="canon-tab-btn active" onclick="switchCanonTab('factions')">Factions</button>
+  <button class="canon-tab-btn" onclick="switchCanonTab('places')">Places</button>
+  <button class="canon-tab-btn" onclick="switchCanonTab('npcs')">NPCs</button>
+  <button class="canon-tab-btn" onclick="switchCanonTab('history')">History</button>
+  <button class="canon-tab-btn" onclick="switchCanonTab('other')">Other</button>
+</div>
+
+<div id="canon-panel-factions" class="canon-panel active">
+  <div class="settings-desc" style="margin-bottom:6px;">Groups, guilds, orders, armies, cults — who they are, what they want, how they operate.</div>
+  <textarea class="settings-textarea" id="canon-factions" rows="10" placeholder="e.g. The Greywood Compact: a merchant guild based in the Myrr'aurel who trade in preserved memories sealed in amber vials..."></textarea>
+</div>
+<div id="canon-panel-places" class="canon-panel">
+  <div class="settings-desc" style="margin-bottom:6px;">Cities, ruins, roads, regions, landmarks — what they look like, who lives there, what happened there.</div>
+  <textarea class="settings-textarea" id="canon-places" rows="10" placeholder="e.g. The Myrr'aurel: a forest city built into living trees in the eastern reaches. Currently occupied by..."></textarea>
+</div>
+<div id="canon-panel-npcs" class="canon-panel">
+  <div class="settings-desc" style="margin-bottom:6px;">Named characters — living, dead, or unknown. What they want, what they've done, what they hide.</div>
+  <textarea class="settings-textarea" id="canon-npcs" rows="10" placeholder="e.g. Serath of the Pale Hand: former Silver Flame archivist, believed dead after the third campaign. Last seen near..."></textarea>
+</div>
+<div id="canon-panel-history" class="canon-panel">
+  <div class="settings-desc" style="margin-bottom:6px;">Events, wars, disasters, discoveries — what happened, when, and what it changed.</div>
+  <textarea class="settings-textarea" id="canon-history" rows="10" placeholder="e.g. The Third Compact War ended not with a treaty but with silence — both sides stopped fighting on the same day, for reasons no survivor has explained..."></textarea>
+</div>
+<div id="canon-panel-other" class="canon-panel">
+  <div class="settings-desc" style="margin-bottom:6px;">Anything else — trade goods, languages, customs, monsters, magic rules, notes to yourself.</div>
+  <textarea class="settings-textarea" id="canon-other" rows="10" placeholder="e.g. Common trade goods in the region include salted darkfish, rendered tallow, and memory-amber. Memory-amber is..."></textarea>
+</div>
+
+<div class="settings-save-row" style="margin-top:10px;">
+  <span class="canon-char-count" id="canon-char-count"></span>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <span class="settings-saved" id="canon-saved">Saved</span>
+    <button class="settings-save-btn" onclick="saveCanon()">Save</button>
+  </div>
+</div>
+```
+
   </div>
 
   <div class="settings-section">
@@ -1085,34 +1124,66 @@ Let the discovery location deeply shape everything. Stay within Aldoris canon.`;
 
 const DEFAULT_CANON = WORLD_CANON;
 
+const CANON_SECTIONS = ['factions','places','npcs','history','other'];
+const CANON_LABELS = { factions:'Factions', places:'Places', npcs:'NPCs', history:'History & Events', other:'Other Details' };
+let activeCanonTab = 'factions';
+
+function switchCanonTab(tab) {
+  activeCanonTab = tab;
+  CANON_SECTIONS.forEach(s => {
+    const panel = document.getElementById('canon-panel-' + s);
+    const btn = document.querySelector('.canon-tab-btn[onclick*="' + s + '"]');
+    if (panel) panel.className = 'canon-panel' + (s === tab ? ' active' : '');
+    if (btn) btn.className = 'canon-tab-btn' + (s === tab ? ' active' : '');
+  });
+  updateCharCount();
+}
+
+function updateCharCount() {
+  let total = 0;
+  CANON_SECTIONS.forEach(s => {
+    const el = document.getElementById('canon-' + s);
+    if (el) total += el.value.length;
+  });
+  const el = document.getElementById('canon-char-count');
+  if (el) el.textContent = total > 0 ? total.toLocaleString() + ' chars across all sections' : '';
+}
+
 function getWorldCanon() {
-  const extra = localStorage.getItem('lf_extra_canon') || '';
-  if (extra.trim()) {
-    return WORLD_CANON + '\n\nADDITIONAL WORLD DETAILS (use these freely when generating):\n' + extra;
+  const parts = [];
+  CANON_SECTIONS.forEach(s => {
+    const val = localStorage.getItem('lf_canon_' + s) || '';
+    if (val.trim()) parts.push(CANON_LABELS[s].toUpperCase() + ':\n' + val);
+  });
+  if (parts.length) {
+    return WORLD_CANON + '\n\nADDITIONAL WORLD DETAILS (use these freely when generating):\n\n' + parts.join('\n\n');
   }
   return WORLD_CANON;
 }
 
 function loadSettingsView() {
-  const saved = localStorage.getItem('lf_extra_canon') || '';
-  document.getElementById('settings-canon').value = saved;
+  CANON_SECTIONS.forEach(s => {
+    const el = document.getElementById('canon-' + s);
+    if (el) el.value = localStorage.getItem('lf_canon_' + s) || '';
+  });
+  updateCharCount();
+  // Add live char count listeners
+  CANON_SECTIONS.forEach(s => {
+    const el = document.getElementById('canon-' + s);
+    if (el) el.oninput = updateCharCount;
+  });
   const key = getKey();
   document.getElementById('settings-key-display').textContent = key ? key.slice(0, 12) + '...' + key.slice(-4) : 'No key set';
 }
 
 function saveCanon() {
-  const val = document.getElementById('settings-canon').value;
-  localStorage.setItem('lf_extra_canon', val);
+  CANON_SECTIONS.forEach(s => {
+    const el = document.getElementById('canon-' + s);
+    if (el) localStorage.setItem('lf_canon_' + s, el.value);
+  });
   const saved = document.getElementById('canon-saved');
   saved.classList.add('show');
   setTimeout(() => saved.classList.remove('show'), 2000);
-}
-
-function resetCanon() {
-  if (confirm('Reset world canon additions? This only clears what you added — the built-in canon stays.')) {
-    localStorage.removeItem('lf_extra_canon');
-    document.getElementById('settings-canon').value = '';
-  }
 }
 
 function changeKey() {
