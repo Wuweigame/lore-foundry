@@ -637,7 +637,7 @@ Keep each field to 1-3 sentences. Stay within Aldoris canon. Make the hidden imp
 
   try {
     const raw = await callAPI(system, "Fill the fields.");
-    const clean = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
+    const clean = raw.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
     applyFilledFields(parsed);
   } catch(e) { console.error(e); }
@@ -676,7 +676,7 @@ Each field: 1-3 sentences. Archaic weight. Grief underneath. No modern tone.`;
 
   try {
     const raw = await callAPI(system, "Generate unbound artifact fields.");
-    const clean = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
+    const clean = raw.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
     applyFilledFields(parsed);
   } catch(e) { console.error(e); }
@@ -724,7 +724,7 @@ Each field: 1-3 sentences. Stay within Aldoris canon. Let the discovery location
 
   try {
     const raw = await callAPI(system, `Found here: ${context}`);
-    const clean = raw.replace(/\`\`\`json|\`\`\`/g, '').trim();
+    const clean = raw.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
 
     // Apply suggested class
@@ -822,23 +822,23 @@ GROUNDED ITEM RULES:
 - Lore should read like something a person wrote, not a game description. Specific. A little tired. Someone who actually held this thing.
 - FORBIDDEN: "forged from [cosmic material]", "cuts not flesh but [abstract concept]", "born of [mythic event]", destiny language, prophecy language.`;
 
-  const system = \`\${WORLD_CANON}
+  const system = `${WORLD_CANON}
 
 Generate a physical item found in the world of Aldoris. Output a stat-block style entry.
 
-Item type: \${currentItemType}
-What it actually is: \${truth}
-What a finder would think: \${surface}
-What it has been part of: \${history}
-Hidden property or danger: \${hidden}
+Item type: ${currentItemType}
+What it actually is: ${truth}
+What a finder would think: ${surface}
+What it has been part of: ${history}
+Hidden property or danger: ${hidden}
 
 GENERATION SEEDS — use these to shape this specific instance:
-- Primary material: \${material}
-- Physical condition: \${condition}
-- Origin tradition: \${origin}
-- Last held by: \${lastHeld}
-- Original purpose: \${purpose}
-\${mundaneInstructions}
+- Primary material: ${material}
+- Physical condition: ${condition}
+- Origin tradition: ${origin}
+- Last held by: ${lastHeld}
+- Original purpose: ${purpose}
+${mundaneInstructions}
 
 Respond ONLY with valid JSON, no preamble, no markdown fences:
 {
@@ -852,7 +852,7 @@ Respond ONLY with valid JSON, no preamble, no markdown fences:
   "dm_note": "What this item means or might mean. 1-2 sentences."
 }
 
-Properties: 3-5 entries. Specific and physical. No two items should feel alike.\`;
+Properties: 3-5 entries. Specific and physical. No two items should feel alike.`;
 
   try {
     const raw = await callAPI(system, "Generate the item.");
