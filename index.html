@@ -218,7 +218,7 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
   <p style="font-size:13px;color:#44403c;font-style:italic;line-height:1.7;margin-bottom:16px;">Paste your Anthropic API key below. It will be saved in your browser.</p>
   <input id="api-key-input" type="text" placeholder="sk-ant-..." autocorrect="off" autocapitalize="off" spellcheck="false"
     style="width:100%;background:#0a0908;border:1px solid #1c1917;color:#d6d0c4;padding:10px;border-radius:3px;font-size:13px;font-family:monospace;outline:none;box-sizing:border-box;margin-bottom:10px;" />
-  <p id="key-error" style="color:#f87171;font-size:12px;margin-bottom:8px;display:none;">Should start with sk-ant-</p>
+  <p id="key-error" style="color:#f87171;font-size:12px;margin-bottom:8px;display:none;"></p>
   <div style="text-align:right;">
     <input type="button" id="key-submit-btn" value="Enter the Foundry"
       style="padding:11px 22px;background:#7c2d12;color:#fde68a;border:none;border-radius:3px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-family:'IM Fell English',serif;cursor:pointer;-webkit-appearance:none;" />
@@ -1047,15 +1047,59 @@ Let the discovery location deeply shape everything. Stay within Aldoris canon.`;
 
 function getKey() { return localStorage.getItem('lf_api_key') || ''; }
 
-function saveKey() {
+async function saveKey() {
   const val = document.getElementById('api-key-input').value.trim();
+  const errEl = document.getElementById('key-error');
+  const btn = document.getElementById('key-submit-btn');
+
+  errEl.style.display = 'none';
+
   if (!val.startsWith('sk-ant-')) {
-    document.getElementById('key-error').style.display = 'block';
+    errEl.textContent = "Key doesn't look right — should start with sk-ant-";
+    errEl.style.display = 'block';
     return;
   }
+
+  btn.value = 'Checking…';
+  btn.disabled = true;
+
+  // Test the key with a minimal API call
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": val,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 10,
+        messages: [{ role: "user", content: "Hi" }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) {
+      errEl.textContent = "Key rejected: " + (data.error.message || "invalid or expired");
+      errEl.style.display = 'block';
+      btn.value = 'Enter the Foundry';
+      btn.disabled = false;
+      return;
+    }
+  } catch(e) {
+    errEl.textContent = "Could not reach Anthropic — check your connection.";
+    errEl.style.display = 'block';
+    btn.value = 'Enter the Foundry';
+    btn.disabled = false;
+    return;
+  }
+
   localStorage.setItem('lf_api_key', val);
   document.getElementById('key-setup').style.display = 'none';
   document.getElementById('builder').style.display = 'block';
+  btn.value = 'Enter the Foundry';
+  btn.disabled = false;
   init();
   initItemBuilder();
 }
