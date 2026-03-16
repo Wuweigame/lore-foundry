@@ -138,6 +138,21 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
 .stat-dm { padding: 12px 16px; border-top: 1px solid #1c1917; background: var(–bg3); }
 .stat-dm-label { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(–dimmer); margin-bottom: 5px; }
 .stat-dm-text { font-size: 12px; color: var(–muted); font-style: italic; line-height: 1.7; }
+
+/* SETTINGS */
+#settings-view { padding: 20px 16px; display: none; }
+.settings-section { margin-bottom: 24px; }
+.settings-title { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(–muted); margin-bottom: 6px; }
+.settings-desc { font-size: 12px; color: var(–dim); font-style: italic; line-height: 1.6; margin-bottom: 10px; }
+.settings-textarea { width: 100%; background: var(–bg2); border: 1px solid var(–border); color: var(–text); padding: 10px; border-radius: 3px; font-size: 13px; font-family: ‘IM Fell English’, Georgia, serif; outline: none; line-height: 1.7; resize: vertical; box-sizing: border-box; }
+.settings-save-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
+.settings-save-btn { padding: 9px 20px; background: var(–amber-dark); color: var(–gold); border: none; border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .18em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
+.settings-saved { font-size: 11px; color: #6a9e6a; letter-spacing: .12em; text-transform: uppercase; opacity: 0; transition: opacity .3s; }
+.settings-saved.show { opacity: 1; }
+.settings-reset { font-size: 10px; color: var(–dimmer); background: none; border: none; cursor: pointer; text-decoration: underline; font-family: ‘IM Fell English’, serif; padding: 0; }
+.settings-key-row { display: flex; gap: 8px; align-items: center; }
+.settings-key-display { flex: 1; background: var(–bg2); border: 1px solid var(–border); color: var(–dim); padding: 8px 10px; border-radius: 3px; font-size: 11px; font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.settings-key-btn { padding: 8px 14px; background: transparent; color: var(–muted); border: 1px solid var(–border); border-radius: 3px; cursor: pointer; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; font-family: ‘IM Fell English’, serif; white-space: nowrap; -webkit-tap-highlight-color: transparent; }
 .empty-link { margin-top: 10px; background: none; border: none; color: var(–muted); cursor: pointer; font-size: 12px; text-decoration: underline; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
 .unbound-btn { font-size: 9px; letter-spacing: .12em; text-transform: uppercase; padding: 5px 8px; border-radius: 3px; cursor: pointer; border: none; background: #0f1a14; outline: 1px solid #1c3028; color: #4a7c68; font-family: ‘IM Fell English’, serif; -webkit-tap-highlight-color: transparent; }
 .unbound-btn:active { background: #162a20; }
@@ -161,6 +176,7 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
   <button class="tab active" id="tab-builder" onclick="switchTab('builder')">Build</button>
   <button class="tab" id="tab-item" onclick="switchTab('item')">Item</button>
   <button class="tab" id="tab-artifact" onclick="switchTab('artifact')">Artifact</button>
+  <button class="tab" id="tab-settings" onclick="switchTab('settings')">⚙</button>
 </div>
 
 <div id="item-builder">
@@ -213,6 +229,31 @@ input[type=range] { width: 100%; accent-color: var(–amber); cursor: pointer; }
     <p class="empty-lbl">No item yet.</p>
     <button class="empty-link" onclick="switchTab('item')">Go to item builder</button>
   </div>
+</div>
+
+<div id="settings-view">
+
+  <div class="settings-section">
+    <div class="settings-title">World Canon</div>
+    <div class="settings-desc">This is what the generator reads before creating anything. Add factions, places, NPCs, events, history — the more detail you add, the more varied and specific the output becomes.</div>
+    <textarea class="settings-textarea" id="settings-canon" rows="18" placeholder="Add your world details here..."></textarea>
+    <div class="settings-save-row">
+      <button class="settings-reset" onclick="resetCanon()">Reset to defaults</button>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="settings-saved" id="canon-saved">Saved</span>
+        <button class="settings-save-btn" onclick="saveCanon()">Save Canon</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <div class="settings-title">API Key</div>
+    <div class="settings-key-row">
+      <div class="settings-key-display" id="settings-key-display"></div>
+      <button class="settings-key-btn" onclick="changeKey()">Change</button>
+    </div>
+  </div>
+
 </div>
 
 <div id="key-setup" style="padding:40px 16px;max-width:480px;margin:0 auto;">
@@ -440,17 +481,19 @@ function randomize() {
 }
 
 function switchTab(tab) {
-  ['builder','item-builder','item-result','artifact-view'].forEach(id => {
+  ['builder','item-builder','item-result','artifact-view','settings-view'].forEach(id => {
     document.getElementById(id).style.display = 'none';
   });
   if (tab === 'builder') document.getElementById('builder').style.display = 'block';
   else if (tab === 'item') document.getElementById('item-builder').style.display = 'block';
   else if (tab === 'item-result') document.getElementById('item-result').style.display = 'block';
   else if (tab === 'artifact') document.getElementById('artifact-view').style.display = 'block';
+  else if (tab === 'settings') { document.getElementById('settings-view').style.display = 'block'; loadSettingsView(); }
 
   document.getElementById('tab-builder').classList.toggle('active', tab === 'builder');
   document.getElementById('tab-item').classList.toggle('active', tab === 'item' || tab === 'item-result');
   document.getElementById('tab-artifact').classList.toggle('active', tab === 'artifact');
+  document.getElementById('tab-settings').classList.toggle('active', tab === 'settings');
 }
 
 async function generate() {
@@ -475,7 +518,7 @@ async function generate() {
   document.getElementById('loading-class').textContent = CLASSES[currentClass].label;
   document.getElementById('tab-artifact').textContent = 'Artifact …';
 
-  const system = `${WORLD_CANON}\n\nGenerate a single in-universe artifact.\nClass: ${CLASSES[currentClass].label}\nVoice: ${CLASSES[currentClass].voice}\nSubject: ${subject}\nWhat actually happened: ${truthActual}\nWhat the author believes: ${authorBelief}\nWhat the author withholds: ${truthWithheld}\nThe author's blind spot: ${authorError}\nTruth relation: ${truthRelation}\nDistortions: ${distortion1}, ${distortion2}\nPreservation: ${preservation}\nHidden implication (never state directly): ${hiddenImplication}\nLength: ~${length} words\n\nRULES: Write ONLY the artifact. No preamble. Never state the hidden implication directly. If fragmentary, use [line lost] or [illegible]. End with — [Author name]. No modern vocabulary.`;
+  const system = `${getWorldCanon()}\n\nGenerate a single in-universe artifact.\nClass: ${CLASSES[currentClass].label}\nVoice: ${CLASSES[currentClass].voice}\nSubject: ${subject}\nWhat actually happened: ${truthActual}\nWhat the author believes: ${authorBelief}\nWhat the author withholds: ${truthWithheld}\nThe author's blind spot: ${authorError}\nTruth relation: ${truthRelation}\nDistortions: ${distortion1}, ${distortion2}\nPreservation: ${preservation}\nHidden implication (never state directly): ${hiddenImplication}\nLength: ~${length} words\n\nRULES: Write ONLY the artifact. No preamble. Never state the hidden implication directly. If fragmentary, use [line lost] or [illegible]. End with — [Author name]. No modern vocabulary.`;
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -614,7 +657,7 @@ async function randomizeFill() {
 
   setFillingState(true);
   const subject = document.getElementById('subject-select').value;
-  const system = `${WORLD_CANON}
+  const system = `${getWorldCanon()}
 
 You are filling in the truth layer fields for a lore artifact builder. Given the subject and document class below, generate fitting content for each field. Respond ONLY with valid JSON, no preamble, no markdown fences.
 
@@ -696,7 +739,7 @@ async function runDiscovered() {
   const classKeys = Object.keys(CLASSES);
   const classOptions = classKeys.map(k => `${k}: ${CLASSES[k].label} (${CLASSES[k].voice})`).join('\n');
 
-  const system = `${WORLD_CANON}
+  const system = `${getWorldCanon()}
 
 You are deciding what kind of document was found and filling the truth layer fields for a lore artifact. A player or DM has described where the document was physically discovered. Use that context to determine the most fitting document class and generate appropriate content.
 
@@ -816,7 +859,7 @@ GROUNDED ITEM RULES:
 - Lore should read like something a person wrote, not a game description. Specific. A little tired. Someone who actually held this thing.
 - FORBIDDEN: "forged from [cosmic material]", "cuts not flesh but [abstract concept]", "born of [mythic event]", destiny language, prophecy language.`;
 
-  const system = `${WORLD_CANON}
+  const system = `${getWorldCanon()}
 
 Generate a physical item found in the world of Aldoris. Output a stat-block style entry.
 
@@ -942,7 +985,7 @@ async function itemRandomFill() {
   // Keep the current item type — just fill in the fields
   document.getElementById('item-filling-indicator').style.display = 'inline';
 
-  const system = `${WORLD_CANON}
+  const system = `${getWorldCanon()}
 
 Fill the item builder fields for an item from the world of Aldoris. Type: ${currentItemType}.
 
@@ -1002,7 +1045,7 @@ async function runDiscoveredItem() {
   btn.disabled = true; btn.textContent = 'Reading…';
 
   const typeOptions = ITEM_TYPES.join(', ');
-  const system = `${WORLD_CANON}
+  const system = `${getWorldCanon()}
 
 An item was physically discovered in the world. Based on the discovery location, decide what type of item it is and fill in all builder fields.
 
@@ -1037,6 +1080,45 @@ Let the discovery location deeply shape everything. Stay within Aldoris canon.`;
     switchTab('item');
   } catch(e) { console.error(e); }
   btn.disabled = false; btn.textContent = 'Find It';
+}
+
+
+const DEFAULT_CANON = WORLD_CANON;
+
+function getWorldCanon() {
+  const extra = localStorage.getItem('lf_extra_canon') || '';
+  if (extra.trim()) {
+    return WORLD_CANON + '\n\nADDITIONAL WORLD DETAILS (use these freely when generating):\n' + extra;
+  }
+  return WORLD_CANON;
+}
+
+function loadSettingsView() {
+  const saved = localStorage.getItem('lf_extra_canon') || '';
+  document.getElementById('settings-canon').value = saved;
+  const key = getKey();
+  document.getElementById('settings-key-display').textContent = key ? key.slice(0, 12) + '...' + key.slice(-4) : 'No key set';
+}
+
+function saveCanon() {
+  const val = document.getElementById('settings-canon').value;
+  localStorage.setItem('lf_extra_canon', val);
+  const saved = document.getElementById('canon-saved');
+  saved.classList.add('show');
+  setTimeout(() => saved.classList.remove('show'), 2000);
+}
+
+function resetCanon() {
+  if (confirm('Reset world canon additions? This only clears what you added — the built-in canon stays.')) {
+    localStorage.removeItem('lf_extra_canon');
+    document.getElementById('settings-canon').value = '';
+  }
+}
+
+function changeKey() {
+  localStorage.removeItem('lf_api_key');
+  document.getElementById('settings-view').style.display = 'none';
+  document.getElementById('key-setup').style.display = 'block';
 }
 
 function getKey() { return localStorage.getItem('lf_api_key') || ''; }
